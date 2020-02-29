@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import {Text, View, Button, TouchableOpacity} from 'react-native';
+import {Text, View, Button, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import colors from '../constants/colors';
+import CalendarDate from '../components/CalendarDate';
 
 const CalendarScreen = ({navigation}) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -66,7 +68,7 @@ const CalendarScreen = ({navigation}) => {
     return matrix;
   };
 
-  changeMonth = n => {
+  const changeMonth = n => {
     setCalendarDate(
       new Date(
         calendarDate.getFullYear(),
@@ -76,17 +78,11 @@ const CalendarScreen = ({navigation}) => {
     );
   };
 
-  goToToday = () => {
+  const goToToday = () => {
     setCalendarDate(activeDate);
   };
 
-  isOtherMonth = (rowIndex, date) => {
-    if ((rowIndex == 1 && date > 20) || (rowIndex >= 5 && date < 15))
-      return true;
-    else return false;
-  };
-
-  isTodaysDate = day => {
+  const isTodaysDate = day => {
     if (
       day == activeDate.getDate() &&
       calendarDate.getFullYear() == activeDate.getFullYear() &&
@@ -102,65 +98,24 @@ const CalendarScreen = ({navigation}) => {
   rows = matrix.map((row, rowIndex) => {
     var rowItems = row.map((item, colIndex) => {
       return (
-        <TouchableOpacity
-          disabled={rowIndex == 0 || isOtherMonth(rowIndex, item)}
-          style={{
-            flex: 1,
-            height: rowIndex == 0 ? 30 : 60,
-            textAlign: 'center',
-            backgroundColor: rowIndex == 0 ? '#85BB65' : '#fff',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          key={rowIndex + ' ' + colIndex}
+        <CalendarDate
+          rowIndex={rowIndex}
+          colIndex={colIndex}
+          day={item}
           onPress={() => {
             navigation.navigate('Day', {
               _year: calendarDate.getFullYear(),
               _month: months[calendarDate.getMonth()],
               _day: item,
             });
-          }}>
-          <View
-            style={{
-              height: 30,
-              width: 30,
-              borderRadius: 60,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor:
-                (isTodaysDate(item) && !isOtherMonth(rowIndex, item)) ||
-                rowIndex == 0
-                  ? '#85BB65'
-                  : '#fff',
-            }}>
-            <Text
-              style={{
-                color:
-                  (isTodaysDate(item) && !isOtherMonth(rowIndex, item)) ||
-                  rowIndex == 0
-                    ? '#fff'
-                    : isOtherMonth(rowIndex, item)
-                    ? '#D3D3D3'
-                    : '#000',
-                fontWeight: isOtherMonth(rowIndex, item) ? 'normal' : 'bold',
-              }}>
-              {item != -1 ? item : ''}
-            </Text>
-          </View>
-        </TouchableOpacity>
+          }}
+          isTodaysDate={isTodaysDate}
+          key={rowIndex + ' ' + colIndex}
+        />
       );
     });
     return (
-      <View
-        key={rowIndex}
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          padding: 15,
-          margin: 15,
-          justifyContent: 'space-around',
-          alignItems: 'center',
-        }}>
+      <View key={rowIndex} style={styles.calendarRowsStyle}>
         {rowItems}
       </View>
     );
@@ -168,36 +123,25 @@ const CalendarScreen = ({navigation}) => {
 
   return (
     <SafeAreaView forceInset={{top: 'always'}}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 100,
-          marginBottom: 10,
-        }}>
+      <View style={styles.monthContainerStyle}>
         <Icon
-          style={{width: 25}}
+          style={styles.iconStyle}
           name={'angle-left'}
           size={25}
-          color={'#85BB65'}
+          color={colors.dollarBill}
           onPress={() => changeMonth(-1)}
         />
-        <View style={{width: 200}}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 22,
-              textAlign: 'center',
-            }}>
+        <View style={styles.monthNameContainerStyle}>
+          <Text style={styles.monthNameTextStyle}>
             {months[calendarDate.getMonth()]} &nbsp;
             {calendarDate.getFullYear()}
           </Text>
         </View>
         <Icon
-          style={{width: 25}}
+          style={styles.iconStyle}
           name={'angle-right'}
           size={25}
-          color={'#85BB65'}
+          color={colors.dollarBill}
           onPress={() => changeMonth(1)}
         />
       </View>
@@ -205,10 +149,41 @@ const CalendarScreen = ({navigation}) => {
       <Button
         title={'Go to Today'}
         onPress={() => goToToday()}
-        style={{marginTop: 40}}
+        style={styles.todayButtonStyle}
       />
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  monthContainerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 100,
+    marginBottom: 10,
+  },
+  iconStyle: {
+    width: 25,
+  },
+  monthNameContainerStyle: {
+    width: 200,
+  },
+  monthNameTextStyle: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    textAlign: 'center',
+  },
+  todayButtonStyle: {
+    marginTop: 40,
+  },
+  calendarRowsStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 15,
+    margin: 15,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+});
 
 export default CalendarScreen;
