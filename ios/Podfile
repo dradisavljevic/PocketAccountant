@@ -33,6 +33,10 @@ target 'PocketAccountant' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+  use_frameworks!
+  pod 'RNInputMask', :path => '../node_modules/react-native-text-input-mask/ios/InputMask'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   target 'PocketAccountantTests' do
     inherit! :search_paths

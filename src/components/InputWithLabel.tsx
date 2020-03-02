@@ -1,29 +1,32 @@
 import React, {useState, useEffect} from 'react';
 import {View, TextInput, Animated, StyleSheet} from 'react-native';
 import colors from '../constants/colors';
-
-var animatedIsFocused = new Animated.Value(0);
+import TextInputMask from 'react-native-text-input-mask';
+import If from '../utils/conditional';
 
 const InputWithLabel: FC<Props> = ({label, ...props}) => {
   const [focused, setFocued] = useState(false);
+  const [animationStart, setAnimationStart] = useState(
+    props.value == '' ? new Animated.Value(1) : new Animated.Value(0),
+  );
 
   useEffect(() => {
-    Animated.timing(animatedIsFocused, {
+    Animated.timing(animationStart, {
       toValue: focused || props.value !== '' ? 1 : 0,
       duration: 200,
     }).start();
   }, [focused]);
 
   const animationStyle = {
-    top: animatedIsFocused.interpolate({
+    top: animationStart.interpolate({
       inputRange: [0, 1],
       outputRange: [26, 8],
     }),
-    fontSize: animatedIsFocused.interpolate({
+    fontSize: animationStart.interpolate({
       inputRange: [0, 1],
       outputRange: [20, 14],
     }),
-    color: animatedIsFocused.interpolate({
+    color: animationStart.interpolate({
       inputRange: [0, 1],
       outputRange: ['#aaa', '#000'],
     }),
@@ -34,16 +37,48 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
       <Animated.Text style={[styles.textStyle, animationStyle]}>
         {label}
       </Animated.Text>
-      <TextInput
-        style={styles.inputStyle}
-        {...props}
-        onFocus={() => setFocued(true)}
-        onBlur={() => setFocued(false)}
-        blurOnSubmit
-        autoCapitalize={'none'}
-        autoCorrect={false}
-        autoCompleteType={'off'}
-        selectionColor={colors.dollarBill}
+      <If
+        condition={props.mask == undefined}
+        then={
+          <TextInput
+            style={styles.inputStyle}
+            {...props}
+            onFocus={() => setFocued(true)}
+            onBlur={() => {
+              setFocued(false);
+              if (props.value == '') {
+                setAnimationStart(new Animated.Value(1));
+              }
+            }}
+            blurOnSubmit
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            autoCompleteType={'off'}
+            selectionColor={colors.dollarBill}
+          />
+        }
+        else={
+          <TextInputMask
+            style={styles.inputStyle}
+            {...props}
+            onFocus={() => setFocued(true)}
+            onBlur={() => {
+              setFocued(false);
+              if (props.value == '') {
+                setAnimationStart(new Animated.Value(1));
+                this.textInput.input.clear();
+              }
+            }}
+            blurOnSubmit
+            ref={input => {
+              this.textInput = input;
+            }}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            autoCompleteType={'off'}
+            selectionColor={colors.dollarBill}
+          />
+        }
       />
     </View>
   );
