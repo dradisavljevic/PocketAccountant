@@ -36,6 +36,7 @@ target 'PocketAccountant' do
   use_frameworks!
   pod 'RNInputMask', :path => '../node_modules/react-native-text-input-mask/ios/InputMask'
 
+
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   target 'PocketAccountantTests' do

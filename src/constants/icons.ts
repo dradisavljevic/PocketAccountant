@@ -13,7 +13,7 @@ const icons: IconCodes = {
   lifestyle: 'couch',
   technology: 'laptop',
   gifts: 'gift',
-  miscellaneous: 'elipsis-h'
-}
+  miscellaneous: 'ellipsis-h',
+};
 
 export default icons;

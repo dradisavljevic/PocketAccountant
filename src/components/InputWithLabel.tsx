@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: '#555',
+    marginHorizontal: 30,
   },
 });
 
