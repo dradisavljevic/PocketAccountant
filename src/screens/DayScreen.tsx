@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Item from '../components/Item';
-import DateHeader from '../components/DateHeader';
+import Header from '../components/Header';
 import icons from '../constants/icons';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -13,25 +13,11 @@ const DayScreen = ({navigation}) => {
   const _day = navigation.getParam('_day');
   return (
     <SafeAreaView style={styles.backgroundStyle} forceInset={{bottom: 'never'}}>
-      <DateHeader
-        day={_day}
-        month={_month}
-        year={_year}
+      <Header
+        title={`${_month} ${_day}, ${_year}`}
         onPress={() => navigation.goBack(null)}
+        icon={'arrow-left'}
       />
-      <View style={styles.listTitleStyle}>
-        <View style={styles.categoryTitleContainerStyle}>
-          <Text adjustsFontSizeToFit numberOfLines={1} style={styles.textStyle}>
-            Cat.
-          </Text>
-        </View>
-        <View style={styles.nameTitleContainerStyle}>
-          <Text style={styles.textStyle}>Item Name</Text>
-        </View>
-        <View style={styles.priceTitleContainerStyle}>
-          <Text style={styles.textStyle}>Price</Text>
-        </View>
-      </View>
       <FlatList
         data={[
           {category: icons.clothes, name: 'Devin', price: 50},
@@ -92,40 +78,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.dollarBill,
   },
-  listTitleStyle: {
-    paddingHorizontal: 10,
-    marginTop: 10,
-    borderBottomColor: colors.black,
-    borderBottomWidth: 3,
-    height: 30,
-    flexDirection: 'row',
-    backgroundColor: colors.dollarBill,
-  },
-  categoryTitleContainerStyle: {
-    flex: 1,
-    borderRightColor: colors.black,
-    borderRightWidth: 2,
-    padding: 5,
-  },
-  textStyle: {
-    textAlign: 'center',
-  },
-  nameTitleContainerStyle: {
-    flex: 8,
-    borderRightColor: colors.black,
-    borderRightWidth: 2,
-    padding: 5,
-  },
-  priceTitleContainerStyle: {
-    flex: 2,
-    padding: 5,
-  },
   listContainerStyle: {
     backgroundColor: colors.white,
   },
   priceTotalContainerStyle: {
     paddingRight: 20,
-    height: 80,
+    height: 50,
     backgroundColor: colors.white,
     justifyContent: 'center',
   },
@@ -135,7 +93,7 @@ const styles = StyleSheet.create({
   },
   floatingButtonStyle: {
     paddingRight: 40,
-    height: 150,
+    height: 120,
     backgroundColor: colors.white,
     paddingBottom: 50,
     alignItems: 'flex-end',

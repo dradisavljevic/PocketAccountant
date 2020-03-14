@@ -12,10 +12,8 @@
     "build:android:debug": "cd ./android && ./gradlew app:assembleDebug && ./gradlew installDebug && adb reverse tcp:8081 tcp:8081",
     "prettify": "lint-staged",
     "clean": "rm -rf node_modules/ && npm install",
-    "tron": "node_modules/.bin/reactotron",
     "remove-haste": "rm -rf /tmp/hast-map-react-native-packager-*",
-    "droid-reverse-port": "adb reverse tcp:9090 tcp:9090",
-    "rn-tron-droid": "npm run android && npm run droid-reverse-port"
+    "droid-reverse-port": "adb reverse tcp:9090 tcp:9090"
   },
   "husky": {
     "hooks": {

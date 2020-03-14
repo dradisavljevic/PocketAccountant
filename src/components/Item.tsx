@@ -3,59 +3,44 @@ import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
 
-const Item: FC<Props> = ({name, price, category}) => (
+const Item = ({name, price, category}) => (
   <View style={styles.containerStyle}>
-    <View style={styles.categoryContainerStyle}>
-      <Icon
-        style={styles.iconStyle}
-        name={category}
-        size={25}
-        color={'black'}
-      />
+    <Icon style={styles.iconStyle} name={category} size={25} color={'black'} />
+    <View style={{flex: 1, marginLeft: 25}}>
+      <Text style={styles.nameStyle}>{name}</Text>
+      <Text style={styles.priceStyle}>¥{price}</Text>
     </View>
-    <View style={styles.nameContainerStyle}>
-      <Text style={styles.textStyle}>{name}</Text>
-    </View>
-    <View style={styles.priceContainerStyle}>
-      <Text style={styles.textStyle}>{price}</Text>
-    </View>
+    <Icon
+      style={{width: 30}}
+      hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}
+      name={'trash'}
+      size={25}
+      color={'red'}
+      onPress={() => {}}
+    />
   </View>
 );
 
 const styles = StyleSheet.create({
   containerStyle: {
-    paddingHorizontal: 10,
+    padding: 15,
     flex: 1,
     flexDirection: 'row',
     borderColor: colors.black,
     borderBottomWidth: 1,
     borderTopWidth: 1,
-  },
-  categoryContainerStyle: {
-    flex: 1,
-    borderColor: colors.black,
-    padding: 5,
-    borderRightWidth: 2,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   iconStyle: {
     width: 30,
   },
-  nameContainerStyle: {
-    flex: 8,
-    borderColor: colors.black,
-    borderRightWidth: 2,
-    padding: 5,
-    justifyContent: 'center',
+  nameStyle: {
+    fontSize: 22,
+    color: 'black',
   },
-  textStyle: {
-    textAlign: 'center',
-  },
-  priceContainerStyle: {
-    flex: 2,
-    padding: 5,
-    justifyContent: 'center',
+  priceStyle: {
+    fontSize: 16,
+    color: 'gray',
   },
 });
 

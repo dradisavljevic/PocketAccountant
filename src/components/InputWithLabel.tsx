@@ -20,7 +20,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
   const animationStyle = {
     top: animationStart.interpolate({
       inputRange: [0, 1],
-      outputRange: [26, 8],
+      outputRange: [15, -10],
     }),
     fontSize: animationStart.interpolate({
       inputRange: [0, 1],
@@ -28,12 +28,31 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
     }),
     color: animationStart.interpolate({
       inputRange: [0, 1],
-      outputRange: ['#aaa', '#000'],
+      outputRange: [
+        props.editable ? '#aaa' : colors.lightGray,
+        props.editable
+          ? focused
+            ? colors.dollarBill
+            : '#000'
+          : colors.lightGray,
+      ],
     }),
   };
 
+  const borderStyle = {
+    borderColor: focused
+      ? colors.dollarBill
+      : props.editable
+      ? '#555'
+      : colors.lightGray,
+  };
+
+  const textColorStyle = {
+    color: props.editable ? '#000' : colors.lightGray,
+  };
+
   return (
-    <View style={styles.containerStyle}>
+    <View style={[styles.containerStyle, borderStyle]}>
       <Animated.Text style={[styles.textStyle, animationStyle]}>
         {label}
       </Animated.Text>
@@ -41,7 +60,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
         condition={props.mask == undefined}
         then={
           <TextInput
-            style={styles.inputStyle}
+            style={[styles.inputStyle, textColorStyle]}
             {...props}
             onFocus={() => setFocued(true)}
             onBlur={() => {
@@ -59,7 +78,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
         }
         else={
           <TextInputMask
-            style={styles.inputStyle}
+            style={[styles.inputStyle, textColorStyle]}
             {...props}
             onFocus={() => setFocued(true)}
             onBlur={() => {
@@ -88,23 +107,22 @@ const styles = StyleSheet.create({
   inputStyle: {
     height: 26,
     fontSize: 20,
-    color: '#000',
     paddingLeft: 10,
   },
   textStyle: {
     position: 'absolute',
     left: 0,
-    paddingLeft: 10,
+    backgroundColor: colors.white,
+    paddingHorizontal: 5,
+    marginLeft: 10,
   },
   containerStyle: {
-    paddingTop: 26,
-    paddingBottom: 15,
+    paddingVertical: 15,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
     backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: '#555',
-    marginHorizontal: 30,
+    borderWidth: 1,
+    borderColor: '#555',
   },
 });
 

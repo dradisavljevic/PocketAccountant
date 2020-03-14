@@ -6,21 +6,15 @@ import {
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions,
   Keyboard,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import colors from '../constants/colors';
 
-const CategorySelector = ({
-  selectorFunction,
-  displayText,
-  data,
-  keyExtractor,
-}) => {
+const CategorySelector = ({selectorFunction, displayText, data}) => {
   const [showModal, setShowModal] = useState(false);
   const [icon, setIcon] = useState(undefined);
   const cancelationText = 'Cancel';
-  const deviceWidth = Dimensions.get('window').width - 90;
 
   let categories = data.map((item, index) => {
     let marginTop = index == 0 ? 50 : 15;
@@ -38,14 +32,15 @@ const CategorySelector = ({
             style={styles.categoryIconStyle}
             name={item.icon}
             size={25}
-            color={'black'}
+            color={colors.black}
           />
           <Text
             style={{
               color: 'blue',
               fontSize: 18,
               textAlign: 'center',
-              width: deviceWidth,
+              flex: 1,
+              marginRight: 45,
             }}>
             {item.name}
           </Text>
@@ -63,7 +58,7 @@ const CategorySelector = ({
         style={styles.categoryIconStyle}
         name={icon}
         size={25}
-        color={'black'}
+        color={colors.black}
       />
     );
   };
@@ -126,7 +121,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     marginBottom: 8,
     padding: 8,
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,1)',
   },
   cancelStyle: {
     borderRadius: 5,
@@ -150,12 +145,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonStyle: {
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,1)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
-    marginHorizontal: 60,
+    padding: 15,
     flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
   },
   buttonTextStyle: {
     fontSize: 18,

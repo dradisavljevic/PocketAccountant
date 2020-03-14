@@ -12,6 +12,7 @@ const icons: IconCodes = {
   healthcare: 'briefcase-medical',
   lifestyle: 'couch',
   technology: 'laptop',
+  bills: 'receipt',
   gifts: 'gift',
   miscellaneous: 'ellipsis-h',
 };
