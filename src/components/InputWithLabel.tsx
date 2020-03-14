@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, TextInput, Animated, StyleSheet} from 'react-native';
 import colors from '../constants/colors';
-import TextInputMask from 'react-native-text-input-mask';
 import If from '../utils/conditional';
 
 const InputWithLabel: FC<Props> = ({label, ...props}) => {
@@ -56,48 +55,21 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
       <Animated.Text style={[styles.textStyle, animationStyle]}>
         {label}
       </Animated.Text>
-      <If
-        condition={props.mask == undefined}
-        then={
-          <TextInput
-            style={[styles.inputStyle, textColorStyle]}
-            {...props}
-            onFocus={() => setFocued(true)}
-            onBlur={() => {
-              setFocued(false);
-              if (props.value == '') {
-                setAnimationStart(new Animated.Value(1));
-              }
-            }}
-            blurOnSubmit
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            autoCompleteType={'off'}
-            selectionColor={colors.dollarBill}
-          />
-        }
-        else={
-          <TextInputMask
-            style={[styles.inputStyle, textColorStyle]}
-            {...props}
-            onFocus={() => setFocued(true)}
-            onBlur={() => {
-              setFocued(false);
-              if (props.value == '') {
-                setAnimationStart(new Animated.Value(1));
-                this.textInput.input.clear();
-              }
-            }}
-            blurOnSubmit
-            ref={input => {
-              this.textInput = input;
-            }}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            autoCompleteType={'off'}
-            selectionColor={colors.dollarBill}
-          />
-        }
+      <TextInput
+        style={[styles.inputStyle, textColorStyle]}
+        {...props}
+        onFocus={() => setFocued(true)}
+        onBlur={() => {
+          setFocued(false);
+          if (props.value == '') {
+            setAnimationStart(new Animated.Value(1));
+          }
+        }}
+        blurOnSubmit
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        autoCompleteType={'off'}
+        selectionColor={colors.dollarBill}
       />
     </View>
   );
