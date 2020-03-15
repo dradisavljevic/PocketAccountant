@@ -7,8 +7,6 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  Slider,
-  TouchableWithoutFeedback,
   Switch,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
@@ -59,7 +57,21 @@ const FormScreen = ({navigation}) => {
         title={'Add New Item'}
         onPress={() => navigation.goBack(null)}
         icon={'times'}
-        rightButton={<SaveButton onPress={() => setValid(false)} />}
+        rightButton={
+          <SaveButton
+            onPress={() => {
+              if (
+                price == '' ||
+                price == undefined ||
+                name == '' ||
+                name == undefined ||
+                category == undefined
+              ) {
+                setValid(false);
+              }
+            }}
+          />
+        }
       />
       <ScrollView
         style={styles.formContainerStyle}
@@ -78,12 +90,23 @@ const FormScreen = ({navigation}) => {
           editable={true}
         />
         <InputWithLabel
-          label={'Item Price'}
+          label={'Item Price (¥)'}
           value={price}
-          onChangeText={(formatted, extracted) => {
-            setPrice(extracted);
+          onKeyPress={event => {
+            if (Number.isNaN(Number(event.nativeEvent.key))) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
           }}
-          mask={'¥[00000000]'}
+          onChange={event => {
+            if (Number.isNaN(Number(event.nativeEvent.text))) {
+              event.preventDefault();
+              event.stopPropagation();
+            } else {
+              setPrice(event.nativeEvent.text.replace(/\s/g, ''));
+            }
+          }}
+          maxLength={12}
           keyboardType={'decimal-pad'}
           editable={true}
         />
@@ -149,12 +172,26 @@ const FormScreen = ({navigation}) => {
         </View>
 
         <InputWithLabel
-          label={'Tax Percentage'}
+          label={'Tax Percentage (%)'}
           value={tax}
-          onChangeText={(formatted, extracted) => {
-            setTax(extracted);
+          onKeyPress={event => {
+            if (Number.isNaN(Number(event.nativeEvent.key))) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
           }}
-          mask={'[00].[00]%'}
+          onChange={event => {
+            if (
+              parseFloat(event.nativeEvent.text) > 100 ||
+              Number.isNaN(Number(event.nativeEvent.text))
+            ) {
+              event.preventDefault();
+              event.stopPropagation();
+            } else {
+              setTax(event.nativeEvent.text.replace(/\s/g, ''));
+            }
+          }}
+          maxLength={5}
           keyboardType={'decimal-pad'}
           editable={addTax}
         />

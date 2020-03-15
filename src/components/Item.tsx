@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
 
-const Item = ({name, price, category}) => (
+const Item = ({name, price, category, deleteAction}) => (
   <View style={styles.containerStyle}>
     <Icon style={styles.iconStyle} name={category} size={25} color={'black'} />
     <View style={{flex: 1, marginLeft: 25}}>
@@ -16,7 +16,7 @@ const Item = ({name, price, category}) => (
       name={'trash'}
       size={25}
       color={'red'}
-      onPress={() => {}}
+      onPress={deleteAction}
     />
   </View>
 );
