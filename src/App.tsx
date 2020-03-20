@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {Provider} from 'react-redux';
+import Store from './state/Store';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {setNavigator} from './utils/navigationRef';
@@ -43,10 +45,12 @@ const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
-    <App
-      ref={navigator => {
-        setNavigator(navigator);
-      }}
-    />
+    <Provider store={Store}>
+      <App
+        ref={navigator => {
+          setNavigator(navigator);
+        }}
+      />
+    </Provider>
   );
 };

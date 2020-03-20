@@ -9,15 +9,17 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-navigation';
 import InputWithLabel from '../components/InputWithLabel';
 import colors from '../constants/colors';
-import icons from '../constants/icons';
-import CategorySelector from '../components/CategorySelector';
+import Selector from '../components/Selector';
 import SaveButton from '../components/SaveButton';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import QuantityButton from '../components/QuantityButton';
+import uuid from 'react-native-uuid';
+import {categoryList} from '../constants/data';
 
 const FormScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -27,6 +29,12 @@ const FormScreen = ({navigation}) => {
   const [addTax, setAddTax] = useState(false);
   const [tax, setTax] = useState('');
   const [isValid, setValid] = useState(true);
+  const id = uuid.v1();
+  const theme = useSelector(state => state.theme.color);
+
+  const themeColorStyle = {
+    backgroundColor: theme,
+  };
 
   var warningText = isValid ? ' ' : 'Please fill in all of the fields';
 
@@ -52,7 +60,9 @@ const FormScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.backgroundStyle} forceInset={{bottom: 'never'}}>
+    <SafeAreaView
+      style={[styles.backgroundStyle, themeColorStyle]}
+      forceInset={{bottom: 'never'}}>
       <Header
         title={'Add New Item'}
         onPress={() => navigation.goBack(null)}
@@ -68,6 +78,8 @@ const FormScreen = ({navigation}) => {
                 category == undefined
               ) {
                 setValid(false);
+              } else {
+                setValid(true);
               }
             }}
           />
@@ -75,12 +87,7 @@ const FormScreen = ({navigation}) => {
       />
       <ScrollView
         style={styles.formContainerStyle}
-        contentContainerStyle={{
-          justifyContent: 'space-between',
-          flexGrow: 1,
-          marginVertical: 50,
-          marginHorizontal: 30,
-        }}>
+        contentContainerStyle={styles.listContentStyle}>
         <InputWithLabel
           label={'Item Name'}
           value={name}
@@ -110,25 +117,14 @@ const FormScreen = ({navigation}) => {
           keyboardType={'decimal-pad'}
           editable={true}
         />
-        <CategorySelector
+        <Selector
           selectorFunction={setCategory}
           displayText={category}
-          data={[
-            {icon: icons.meal, name: 'Meals'},
-            {icon: icons.clothes, name: 'Clothes & Accessories'},
-            {icon: icons.tickets, name: 'Tickets & Fares'},
-            {icon: icons.drinks, name: 'Drinks'},
-            {icon: icons.snacks, name: 'Snacks'},
-            {icon: icons.school, name: 'Education'},
-            {icon: icons.healthcare, name: 'Healthcare'},
-            {icon: icons.lifestyle, name: 'Lifestyle'},
-            {icon: icons.technology, name: 'Technology'},
-            {icon: icons.bills, name: 'Bills'},
-            {icon: icons.gifts, name: 'Gifts'},
-            {icon: icons.miscellaneous, name: 'Other'},
-          ]}
+          defaultText={'Select a Category'}
+          selectorType={'category'}
+          data={categoryList}
         />
-        <View style={styles.textContainerStyle}>
+        <View style={styles.rowContainerStyle}>
           <View style={styles.textTitleContainerStyle}>
             <Text
               adjustsFontSizeToFit
@@ -153,7 +149,7 @@ const FormScreen = ({navigation}) => {
             />
           </View>
         </View>
-        <View style={{flexDirection: 'row'}}>
+        <View style={styles.rowContainerStyle}>
           <View style={styles.textTitleContainerStyle}>
             <Text
               adjustsFontSizeToFit
@@ -162,11 +158,11 @@ const FormScreen = ({navigation}) => {
               Has additional tax:
             </Text>
           </View>
-          <View style={{flex: 1, alignItems: 'flex-end'}}>
+          <View style={styles.switchStyle}>
             <Switch
               value={addTax}
               onValueChange={() => setAddTax(!addTax)}
-              trackColor={{true: colors.dollarBill, false: 'grey'}}
+              trackColor={{true: colors.dollarBill, false: colors.middleGrey}}
             />
           </View>
         </View>
@@ -196,7 +192,7 @@ const FormScreen = ({navigation}) => {
           editable={addTax}
         />
 
-        <View style={styles.textContainerStyle}>
+        <View style={styles.rowContainerStyle}>
           <View style={styles.textTitleContainerStyle}>
             <Text
               style={styles.textTitleStyle}
@@ -210,9 +206,7 @@ const FormScreen = ({navigation}) => {
           </View>
         </View>
         <View>
-          <Text style={{textAlign: 'center', color: 'red', fontSize: 15}}>
-            {warningText}
-          </Text>
+          <Text style={styles.warningStyle}>{warningText}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -222,12 +216,11 @@ const FormScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   backgroundStyle: {
     flex: 1,
-    backgroundColor: colors.dollarBill,
   },
   formContainerStyle: {
     backgroundColor: colors.white,
   },
-  textContainerStyle: {
+  rowContainerStyle: {
     flexDirection: 'row',
   },
   textTitleContainerStyle: {
@@ -250,6 +243,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 30,
     justifyContent: 'center',
+  },
+  listContentStyle: {
+    justifyContent: 'space-between',
+    flexGrow: 1,
+    marginVertical: 50,
+    marginHorizontal: 30,
+  },
+  switchStyle: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  warningStyle: {
+    textAlign: 'center',
+    color: colors.pureRed,
+    fontSize: 15,
   },
 });
 

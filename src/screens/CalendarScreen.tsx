@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
 import {Text, View, Button, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -24,6 +25,7 @@ const CalendarScreen = ({navigation}) => {
   ];
   const [activeDate, setActiveDate] = useState(new Date());
   const [calendarDate, setCalendarDate] = useState(new Date());
+  const theme = useSelector(state => state.theme.color);
 
   const generateMatrix = () => {
     var matrix = [];
@@ -128,7 +130,7 @@ const CalendarScreen = ({navigation}) => {
           style={styles.iconStyle}
           name={'angle-left'}
           size={25}
-          color={colors.dollarBill}
+          color={theme}
           onPress={() => changeMonth(-1)}
         />
         <View style={styles.monthNameContainerStyle}>
@@ -141,7 +143,7 @@ const CalendarScreen = ({navigation}) => {
           style={styles.iconStyle}
           name={'angle-right'}
           size={25}
-          color={colors.dollarBill}
+          color={theme}
           onPress={() => changeMonth(1)}
         />
       </View>

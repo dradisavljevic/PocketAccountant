@@ -4,12 +4,20 @@ import colors from '../constants/colors';
 
 const SaveButton = ({title, onPress}) => {
   return (
-    <TouchableOpacity style={{padding: 5}} onPress={onPress}>
-      <Text style={{fontSize: 18, color: 'blue'}}>Save</Text>
+    <TouchableOpacity style={styles.buttonContainerStyle} onPress={onPress}>
+      <Text style={styles.buttonTextStyle}>Save</Text>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  buttonContainerStyle: {
+    padding: 5,
+  },
+  buttonTextStyle: {
+    fontSize: 18,
+    color: colors.pureBlue,
+  },
+});
 
 export default SaveButton;

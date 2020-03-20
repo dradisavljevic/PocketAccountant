@@ -1,4 +1,5 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 import colors from '../constants/colors';
 
@@ -8,16 +9,17 @@ const CalendarDate = ({onPress, rowIndex, colIndex, day, isTodaysDate}) => {
       return true;
     else return false;
   };
+  const theme = useSelector(state => state.theme.color);
 
   const daysOfWeekStyle = {
     height: rowIndex == 0 ? 30 : 60,
-    backgroundColor: rowIndex == 0 ? colors.dollarBill : colors.white,
+    backgroundColor: rowIndex == 0 ? theme : colors.white,
   };
 
   const daySelectedCircleStyle = {
     backgroundColor:
       (isTodaysDate(day) && !isOtherMonth(rowIndex, day)) || rowIndex == 0
-        ? colors.dollarBill
+        ? theme
         : colors.white,
   };
 

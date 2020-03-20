@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react';
+import {useSelector} from 'react-redux';
 import {View, TextInput, Animated, StyleSheet} from 'react-native';
 import colors from '../constants/colors';
-import If from '../utils/conditional';
 
 const InputWithLabel: FC<Props> = ({label, ...props}) => {
   const [focused, setFocued] = useState(false);
   const [animationStart, setAnimationStart] = useState(
     props.value == '' ? new Animated.Value(1) : new Animated.Value(0),
   );
+  const theme = useSelector(state => state.theme.color);
 
   useEffect(() => {
     Animated.timing(animationStart, {
@@ -28,26 +29,22 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
     color: animationStart.interpolate({
       inputRange: [0, 1],
       outputRange: [
-        props.editable ? '#aaa' : colors.lightGray,
-        props.editable
-          ? focused
-            ? colors.dollarBill
-            : '#000'
-          : colors.lightGray,
+        props.editable ? colors.silver : colors.lightGray,
+        props.editable ? (focused ? theme : colors.black) : colors.lightGray,
       ],
     }),
   };
 
   const borderStyle = {
     borderColor: focused
-      ? colors.dollarBill
+      ? theme
       : props.editable
-      ? '#555'
+      ? colors.davySGrey
       : colors.lightGray,
   };
 
   const textColorStyle = {
-    color: props.editable ? '#000' : colors.lightGray,
+    color: props.editable ? colors.black : colors.lightGray,
   };
 
   return (
@@ -69,7 +66,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
         autoCapitalize={'none'}
         autoCorrect={false}
         autoCompleteType={'off'}
-        selectionColor={colors.dollarBill}
+        selectionColor={theme}
       />
     </View>
   );
@@ -94,7 +91,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#555',
+    borderColor: colors.davySGrey,
   },
 });
 

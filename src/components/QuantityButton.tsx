@@ -4,10 +4,8 @@ import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const QuantityButton = ({disabled, icon, onPress}) => {
-  const disabledColor = '#D3D3D3';
-
   const borderStyle = {
-    borderColor: disabled ? disabledColor : colors.black,
+    borderColor: disabled ? colors.lightGray : colors.black,
   };
 
   return (
@@ -18,7 +16,7 @@ const QuantityButton = ({disabled, icon, onPress}) => {
       <Icon
         name={icon}
         size={15}
-        color={disabled ? disabledColor : colors.black}
+        color={disabled ? colors.lightGray : colors.black}
       />
     </TouchableOpacity>
   );

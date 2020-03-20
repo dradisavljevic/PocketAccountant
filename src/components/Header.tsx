@@ -1,12 +1,47 @@
-import React from 'react';
+import React, {useRef} from 'react';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import icons from '../constants/icons';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
+import Selector from './Selector';
+import {THEME} from '../state/ThemeReducer';
+import {CURRENCY} from '../state/CurrencyReducer';
+import {currencyList, themeList} from '../constants/data';
 
 const Header = ({title, onPress, icon, rightButton}) => {
+  let menuRef = useRef(null);
+  const {theme, currency} = useSelector(
+    state => ({
+      theme: state.theme,
+      currency: state.currency,
+    }),
+    shallowEqual,
+  );
+  const dispatch = useDispatch();
+
+  const setMenuRef = ref => {
+    menuRef = ref;
+  };
+
+  const dispatchTheme = color => {
+    dispatch({type: THEME, payload: color});
+  };
+
+  const dispatchCurrency = short => {
+    dispatch({type: CURRENCY, payload: short});
+  };
+
+  const closeMenu = () => {
+    menuRef.hide();
+  };
+
+  const themeColorStyle = {
+    backgroundColor: theme.color,
+  };
+
   return (
-    <View style={styles.headerStyle}>
+    <View style={[styles.headerStyle, themeColorStyle]}>
       <View style={styles.backContainerStyle}>
         <Icon
           style={styles.backIconStyle}
@@ -26,13 +61,33 @@ const Header = ({title, onPress, icon, rightButton}) => {
       </View>
       <View style={styles.rightContainerStyle}>
         {rightButton}
-        <Icon
-          style={styles.backIconStyle}
-          name={'ellipsis-v'}
-          size={25}
-          color={colors.white}
-          onPress={() => {}}
-        />
+        <Menu
+          ref={ref => setMenuRef(ref)}
+          button={
+            <Icon
+              style={styles.backIconStyle}
+              name={'ellipsis-v'}
+              size={25}
+              color={colors.white}
+              onPress={() => menuRef.show()}
+            />
+          }>
+          <Selector
+            selectorFunction={dispatchTheme}
+            defaultText={'Change Theme'}
+            selectorType={'theme'}
+            cleanupFunction={closeMenu}
+            data={themeList}
+          />
+          <MenuDivider />
+          <Selector
+            selectorFunction={dispatchCurrency}
+            defaultText={'Change Currency'}
+            selectorType={'currency'}
+            cleanupFunction={closeMenu}
+            data={currencyList}
+          />
+        </Menu>
       </View>
     </View>
   );
@@ -51,7 +106,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.dollarBill,
   },
   headerTitleContainerStyle: {
     flex: 5,

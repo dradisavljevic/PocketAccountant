@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Item from '../components/Item';
@@ -45,6 +46,7 @@ const DayScreen = ({navigation}) => {
   ];
 
   const [data, setData] = useState(dataset);
+  const theme = useSelector(state => state.theme.color);
 
   const getCumulativePrice = () => {
     let sum = 0;
@@ -60,8 +62,14 @@ const DayScreen = ({navigation}) => {
     setData(filteredData);
   };
 
+  const themeColorStyle = {
+    backgroundColor: theme,
+  };
+
   return (
-    <SafeAreaView style={styles.backgroundStyle} forceInset={{bottom: 'never'}}>
+    <SafeAreaView
+      style={[styles.backgroundStyle, themeColorStyle]}
+      forceInset={{bottom: 'never'}}>
       <Header
         title={`${_month} ${_day}, ${_year}`}
         onPress={() => navigation.goBack(null)}
@@ -90,7 +98,7 @@ const DayScreen = ({navigation}) => {
           style={styles.floatingButtonIconStyle}
           name={'plus-circle'}
           size={60}
-          color={colors.dollarBill}
+          color={theme}
           onPress={() =>
             navigation.navigate('Form', {
               _year: _year,
@@ -107,7 +115,6 @@ const DayScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   backgroundStyle: {
     flex: 1,
-    backgroundColor: colors.dollarBill,
   },
   listContainerStyle: {
     backgroundColor: colors.white,
@@ -124,9 +131,9 @@ const styles = StyleSheet.create({
   },
   floatingButtonStyle: {
     paddingRight: 40,
-    height: 120,
+    height: 100,
     backgroundColor: colors.white,
-    paddingBottom: 50,
+    paddingBottom: 30,
     alignItems: 'flex-end',
   },
   floatingButtonIconStyle: {

@@ -16,6 +16,12 @@ const colors: ColorPalette = {
   pastelBlue: '#AEC6CF',
   pastelPink: '#DEA5A4',
   lightGray: '#D3D3D3',
+  pureRed: '#FF0000',
+  middleGrey: '#8B8680',
+  pureBlue: '#0000FF',
+  davySGrey: '#555555',
+  silver: '#AAA9AD',
+  transparentBlack: 'rgba(0,0,0,0.7)',
 };
 
 export default colors;

@@ -5,17 +5,22 @@ import colors from '../constants/colors';
 
 const Item = ({name, price, category, deleteAction}) => (
   <View style={styles.containerStyle}>
-    <Icon style={styles.iconStyle} name={category} size={25} color={'black'} />
-    <View style={{flex: 1, marginLeft: 25}}>
+    <Icon
+      style={styles.iconStyle}
+      name={category}
+      size={25}
+      color={colors.black}
+    />
+    <View style={styles.itemWrapperStyle}>
       <Text style={styles.nameStyle}>{name}</Text>
       <Text style={styles.priceStyle}>¥{price}</Text>
     </View>
     <Icon
-      style={{width: 30}}
+      style={styles.iconStyle}
       hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}
       name={'trash'}
       size={25}
-      color={'red'}
+      color={colors.pureRed}
       onPress={deleteAction}
     />
   </View>
@@ -41,6 +46,10 @@ const styles = StyleSheet.create({
   priceStyle: {
     fontSize: 16,
     color: 'gray',
+  },
+  itemWrapperStyle: {
+    flex: 1,
+    marginLeft: 25,
   },
 });
 
