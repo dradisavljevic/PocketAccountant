@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
-import {Text, View, Button, StyleSheet} from 'react-native';
+import {Text, View, Button, StyleSheet, ScrollView} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
 import CalendarDate from '../components/CalendarDate';
+import Header from '../components/Header';
+import {currencySymbols} from '../constants/data';
+import exchangeApi from '../api/api';
+import ModalField from '../components/ModalField';
 
 const CalendarScreen = ({navigation}) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -25,7 +29,27 @@ const CalendarScreen = ({navigation}) => {
   ];
   const [activeDate, setActiveDate] = useState(new Date());
   const [calendarDate, setCalendarDate] = useState(new Date());
-  const theme = useSelector(state => state.theme.color);
+  const [budget, setBudget] = useState(100000);
+  const {theme, currency} = useSelector(state => ({
+    theme: state.theme.color,
+    currency: state.currency.short,
+  }));
+
+  const getList = async () => {
+    const response = await exchangeApi
+      .get()
+      .then(response => {
+        const data = response.data;
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
 
   const generateMatrix = () => {
     var matrix = [];
@@ -123,36 +147,49 @@ const CalendarScreen = ({navigation}) => {
     );
   });
 
+  const themeColorStyle = {
+    backgroundColor: theme,
+  };
+
   return (
-    <SafeAreaView forceInset={{top: 'always'}}>
-      <View style={styles.monthContainerStyle}>
-        <Icon
-          style={styles.iconStyle}
-          name={'angle-left'}
-          size={25}
-          color={theme}
-          onPress={() => changeMonth(-1)}
-        />
-        <View style={styles.monthNameContainerStyle}>
-          <Text style={styles.monthNameTextStyle}>
-            {months[calendarDate.getMonth()]} &nbsp;
-            {calendarDate.getFullYear()}
+    <SafeAreaView forceInset={{top: 'always'}} style={themeColorStyle}>
+      <Header title={'Pocket Accountant'} />
+      <ScrollView
+        style={styles.scrollContainerStyle}
+        contentContainerStyle={styles.scrollContainerItemsStyle}>
+        <View style={styles.monthContainerStyle}>
+          <Icon
+            style={styles.iconStyle}
+            name={'angle-left'}
+            size={25}
+            color={theme}
+            onPress={() => changeMonth(-1)}
+          />
+          <View style={styles.monthNameContainerStyle}>
+            <Text style={styles.monthNameTextStyle}>
+              {months[calendarDate.getMonth()]} &nbsp;
+              {calendarDate.getFullYear()}
+            </Text>
+          </View>
+          <Icon
+            style={styles.iconStyle}
+            name={'angle-right'}
+            size={25}
+            color={theme}
+            onPress={() => changeMonth(1)}
+          />
+        </View>
+        <View style={{alignItems: 'center', marginVertical: 10}}>
+          <Text style={{textDecorationLine: 'underline', fontSize: 16}}>
+            Month's Budget: {budget} {currencySymbols[currency]}
           </Text>
         </View>
-        <Icon
-          style={styles.iconStyle}
-          name={'angle-right'}
-          size={25}
-          color={theme}
-          onPress={() => changeMonth(1)}
-        />
-      </View>
-      {rows}
-      <Button
-        title={'Go to Today'}
-        onPress={() => goToToday()}
-        style={styles.todayButtonStyle}
-      />
+        {rows}
+        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+          <Button title={"Today's Date"} onPress={() => goToToday()} />
+          <ModalField buttonText={"Edit Month's Budget"} />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -161,8 +198,16 @@ const styles = StyleSheet.create({
   monthContainerStyle: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 100,
+    marginTop: 30,
     marginBottom: 10,
+  },
+  scrollContainerStyle: {
+    backgroundColor: colors.white,
+  },
+  scrollContainerItemsStyle: {
+    justifyContent: 'center',
+    paddingBottom: 90,
+    paddingHorizontal: 20,
   },
   iconStyle: {
     width: 25,
@@ -175,14 +220,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: 'center',
   },
-  todayButtonStyle: {
-    marginTop: 40,
-  },
   calendarRowsStyle: {
     flex: 1,
     flexDirection: 'row',
-    padding: 15,
-    margin: 15,
     justifyContent: 'space-around',
     alignItems: 'center',
   },

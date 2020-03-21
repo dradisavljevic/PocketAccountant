@@ -22,6 +22,7 @@ const colors: ColorPalette = {
   davySGrey: '#555555',
   silver: '#AAA9AD',
   transparentBlack: 'rgba(0,0,0,0.7)',
+  transparentGray: 'rgba(80,80,80,0.7)',
 };
 
 export default colors;

@@ -19,7 +19,7 @@ import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import QuantityButton from '../components/QuantityButton';
 import uuid from 'react-native-uuid';
-import {categoryList} from '../constants/data';
+import {categoryList, currencySymbols} from '../constants/data';
 
 const FormScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -30,7 +30,10 @@ const FormScreen = ({navigation}) => {
   const [tax, setTax] = useState('');
   const [isValid, setValid] = useState(true);
   const id = uuid.v1();
-  const theme = useSelector(state => state.theme.color);
+  const {theme, currency} = useSelector(state => ({
+    theme: state.theme.color,
+    currency: state.currency.short,
+  }));
 
   const themeColorStyle = {
     backgroundColor: theme,
@@ -84,6 +87,7 @@ const FormScreen = ({navigation}) => {
             }}
           />
         }
+        showBackButton={true}
       />
       <ScrollView
         style={styles.formContainerStyle}
@@ -97,7 +101,7 @@ const FormScreen = ({navigation}) => {
           editable={true}
         />
         <InputWithLabel
-          label={'Item Price (¥)'}
+          label={`Item Price (${currencySymbols[currency]})`}
           value={price}
           onKeyPress={event => {
             if (Number.isNaN(Number(event.nativeEvent.key))) {
@@ -113,7 +117,7 @@ const FormScreen = ({navigation}) => {
               setPrice(event.nativeEvent.text.replace(/\s/g, ''));
             }
           }}
-          maxLength={12}
+          maxLength={15}
           keyboardType={'decimal-pad'}
           editable={true}
         />
@@ -202,7 +206,9 @@ const FormScreen = ({navigation}) => {
             </Text>
           </View>
           <View>
-            <Text>{getTotal()}¥</Text>
+            <Text>
+              {getTotal()} {currencySymbols[currency]}
+            </Text>
           </View>
         </View>
         <View>

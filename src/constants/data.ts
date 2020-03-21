@@ -14,6 +14,12 @@ export const currencyList = [
   {short: 'AUD', name: 'Australian Dollar'},
   {short: 'ILS', name: 'Israeli New Shekel'},
   {short: 'KRW', name: 'South Korean Won'},
+  {short: 'ZAR', name: 'South African Rand'},
+  {short: 'TRY', name: 'Turkish Lira'},
+  {short: 'SEK', name: 'Swedish Krona'},
+  {short: 'NOK', name: 'Norwegian Krone'},
+  {short: 'BRL', name: 'Brazilian Real'},
+  {short: 'MXN', name: 'Mexican Peso'},
 ];
 
 export const themeList = [
@@ -44,3 +50,24 @@ export const categoryList = [
   {icon: icons.gifts, name: 'Gifts'},
   {icon: icons.miscellaneous, name: 'Other'},
 ];
+
+export const currencySymbols = {
+  CAD: 'C$',
+  GBP: '£',
+  RUB: '₽',
+  JPY: 'JP¥',
+  CHF: 'Fr.',
+  EUR: '€',
+  CNY: 'CN¥',
+  NZD: 'NZ$',
+  USD: '$',
+  AUD: 'AU$',
+  ILS: '₪',
+  KRW: '₩',
+  ZAR: 'R',
+  TRY: '₺',
+  SEK: 'kr',
+  NOK: 'kr',
+  BRL: 'R$',
+  MXN: 'Mex$',
+};

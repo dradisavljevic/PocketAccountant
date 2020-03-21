@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
 } from 'react-native';
@@ -98,7 +97,7 @@ const Selector = ({
 
     return (
       <TouchableOpacity key={item.name} onPress={() => onPress(item)}>
-        <View style={[styles.categoryStyle, {marginTop, marginBottom}]}>
+        <View style={[styles.optionStyle, {marginTop, marginBottom}]}>
           <If
             condition={selectorType == 'category'}
             then={
@@ -128,7 +127,7 @@ const Selector = ({
               />
             }
           />
-          <Text style={styles.optionStyle}>{item.name}</Text>
+          <Text style={styles.optionTextStyle}>{item.name}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -141,32 +140,27 @@ const Selector = ({
         visible={showModal}
         onDismiss={() => setShowModal(false)}
         animationType={'slide'}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setShowModal(false);
-          }}>
-          <ScrollView
-            style={styles.overlayStyle}
-            contentContainerStyle={styles.overlayItemsStyle}>
-            {options}
-            <View style={styles.cancelContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowModal(false);
-                  cleanupFunction && cleanupFunction();
-                }}
-                accessible={true}
-                accessibilityLabel={'Cancel'}
-                accessibilityHint={
-                  'Closes the screen without picking any option'
-                }>
-                <View style={styles.cancelStyle}>
-                  <Text style={styles.cancelTextStyle}>{cancelationText}</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
+        <ScrollView
+          style={styles.overlayStyle}
+          contentContainerStyle={styles.overlayItemsStyle}>
+          {options}
+          <View style={styles.cancelContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowModal(false);
+                cleanupFunction && cleanupFunction();
+              }}
+              accessible={true}
+              accessibilityLabel={'Cancel'}
+              accessibilityHint={
+                'Closes the screen without picking any option'
+              }>
+              <View style={styles.cancelStyle}>
+                <Text style={styles.cancelTextStyle}>{cancelationText}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </Modal>
       <TouchableOpacity
         onPress={() => {
@@ -200,7 +194,7 @@ const styles = StyleSheet.create({
   overlayItemsStyle: {
     justifyContent: 'center',
     paddingBottom: 90,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   optionContainer: {
     borderRadius: 5,
@@ -222,7 +216,7 @@ const styles = StyleSheet.create({
     color: colors.pureRed,
     fontSize: 16,
   },
-  categoryStyle: {
+  optionStyle: {
     backgroundColor: colors.white,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -245,7 +239,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
   },
-  optionStyle: {
+  optionTextStyle: {
     color: colors.pureBlue,
     fontSize: 18,
     textAlign: 'center',

@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -8,16 +8,14 @@ import Selector from './Selector';
 import {THEME} from '../state/ThemeReducer';
 import {CURRENCY} from '../state/CurrencyReducer';
 import {currencyList, themeList} from '../constants/data';
+import If from '../utils/conditional';
 
-const Header = ({title, onPress, icon, rightButton}) => {
+const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
   let menuRef = useRef(null);
-  const {theme, currency} = useSelector(
-    state => ({
-      theme: state.theme,
-      currency: state.currency,
-    }),
-    shallowEqual,
-  );
+  const {theme, currency} = useSelector(state => ({
+    theme: state.theme,
+    currency: state.currency,
+  }));
   const dispatch = useDispatch();
 
   const setMenuRef = ref => {
@@ -43,12 +41,17 @@ const Header = ({title, onPress, icon, rightButton}) => {
   return (
     <View style={[styles.headerStyle, themeColorStyle]}>
       <View style={styles.backContainerStyle}>
-        <Icon
-          style={styles.backIconStyle}
-          name={icon}
-          size={25}
-          color={colors.white}
-          onPress={onPress}
+        <If
+          condition={showBackButton}
+          then={
+            <Icon
+              style={styles.backIconStyle}
+              name={icon}
+              size={25}
+              color={colors.white}
+              onPress={onPress}
+            />
+          }
         />
       </View>
       <View style={styles.headerTitleContainerStyle}>

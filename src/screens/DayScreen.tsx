@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import icons from '../constants/icons';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {currencySymbols} from '../constants/data';
 
 const DayScreen = ({navigation}) => {
   const _year = navigation.getParam('_year');
@@ -46,7 +47,10 @@ const DayScreen = ({navigation}) => {
   ];
 
   const [data, setData] = useState(dataset);
-  const theme = useSelector(state => state.theme.color);
+  const {theme, currency} = useSelector(state => ({
+    theme: state.theme.color,
+    currency: state.currency.short,
+  }));
 
   const getCumulativePrice = () => {
     let sum = 0;
@@ -74,6 +78,7 @@ const DayScreen = ({navigation}) => {
         title={`${_month} ${_day}, ${_year}`}
         onPress={() => navigation.goBack(null)}
         icon={'arrow-left'}
+        showBackButton={true}
       />
       <FlatList
         data={data}
@@ -90,7 +95,7 @@ const DayScreen = ({navigation}) => {
       />
       <View style={styles.priceTotalContainerStyle}>
         <Text style={styles.priceTotalTextStyle}>
-          Day's total: {getCumulativePrice()}¥
+          Day's total: {getCumulativePrice()} {currencySymbols[currency]}
         </Text>
       </View>
       <View style={styles.floatingButtonStyle}>

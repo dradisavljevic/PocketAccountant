@@ -28,6 +28,7 @@
     ]
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "buffer": "^5.5.0",
     "prettier": "^1.19.1",
     "react": "16.9.0",
