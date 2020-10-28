@@ -7,9 +7,10 @@ import Header from '../components/Header';
 import icons from '../constants/icons';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {currencySymbols} from '../constants/data';
+import {currencySymbols, months} from '../constants/data';
 import {ITEMS} from '../state/ItemsReducer';
 import AsyncStorage from '@react-native-community/async-storage';
+import {getSpendingByCurrency} from '../utils/helperFunctions';
 
 const DayScreen = ({navigation}) => {
   const _year = navigation.getParam('_year');
@@ -25,20 +26,6 @@ const DayScreen = ({navigation}) => {
   }));
 
   useEffect(() => {
-    var months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
     var month = months.indexOf(_month) + 1;
     daystring = _day.toString();
     if (_day < 10) {
@@ -53,21 +40,7 @@ const DayScreen = ({navigation}) => {
   }, [items]);
 
   const getCumulativePrice = () => {
-    let sums = {};
-    for (var itemIndex in data) {
-      if (data[itemIndex].currency in sums) {
-        sums[data[itemIndex].currency] +=
-          data[itemIndex].quantity *
-          (data[itemIndex].price +
-            ((data[itemIndex].price * 1.0) / 100) * data[itemIndex].tax);
-      } else {
-        sums[data[itemIndex].currency] = 0;
-        sums[data[itemIndex].currency] +=
-          data[itemIndex].quantity *
-          (data[itemIndex].price +
-            ((data[itemIndex].price * 1.0) / 100) * data[itemIndex].tax);
-      }
-    }
+    let sums = getSpendingByCurrency(data);
 
     sum = "Day's total: ";
 
@@ -201,7 +174,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   priceTotalContainerStyle: {
-    paddingRight: 20,
+    paddingHorizontal: 20,
     height: 50,
     backgroundColor: colors.white,
     justifyContent: 'center',

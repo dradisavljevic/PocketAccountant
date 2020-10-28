@@ -14,7 +14,7 @@ import icons from '../constants/icons';
 import colors from '../constants/colors';
 import CalendarDate from '../components/CalendarDate';
 import Header from '../components/Header';
-import {currencySymbols, monthAbbrev} from '../constants/data';
+import {currencySymbols, monthAbbrev, months} from '../constants/data';
 import exchangeApi from '../api/api';
 import ModalField from '../components/ModalField';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -25,50 +25,14 @@ import {ITEMS} from '../state/ItemsReducer';
 const CalendarScreen = ({navigation}) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const nDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
   const [activeDate, setActiveDate] = useState(new Date());
   const [calendarDate, setCalendarDate] = useState(new Date());
-  const [budget, setBudget] = useState(100000);
   const {theme, currency, items} = useSelector(state => ({
     theme: state.theme.color,
     currency: state.currency.short,
     items: state.items,
   }));
   const dispatch = useDispatch();
-
-  // const getRates = async () => {
-  //   const response = await exchangeApi
-  //     .get(`2010-01-12?base=${currency}`)
-  //     .then(response => {
-  //       const data = response.data;
-  //       for (var key in data.rates) {
-  //           if (currencySymbols.hasOwnProperty(key)) {
-  //               console.log(key, ':', data.rates[key]);
-  //           }
-  //       };
-  //       console.log(data.base);
-  //     })
-  //     .catch(error => {
-  //       console.log(error.message);
-  //     });
-  // };
-  //
-  // useEffect(() => {
-  //   getRates();
-  // }, [currency]);
 
   useEffect(() => {
     getStoredInformation();
@@ -81,7 +45,6 @@ const CalendarScreen = ({navigation}) => {
       data = await AsyncStorage.getItem('items', (error, result) => {
         dispatch({type: ITEMS, payload: JSON.parse(result)});
       });
-      console.log(data);
       if (storedTheme) {
         dispatch({type: THEME, payload: storedTheme});
       }
@@ -246,7 +209,7 @@ const CalendarScreen = ({navigation}) => {
           <Text style={styles.buttonTextStyle}>Add New Purchase</Text>
         </TouchableOpacity>
         {rows}
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <View style={styles.rowStyle}>
           <TouchableOpacity
             onPress={() => goToToday()}
             style={[styles.buttonStyle]}>
@@ -310,6 +273,10 @@ const styles = StyleSheet.create({
   buttonTextStyle: {
     fontSize: 18,
     color: colors.dodgerBlue,
+  },
+  rowStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });
 

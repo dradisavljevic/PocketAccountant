@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import QuantityButton from '../components/QuantityButton';
 import uuid from 'react-native-uuid';
-import {categoryList, currencySymbols} from '../constants/data';
+import {categoryList, currencySymbols, months} from '../constants/data';
 import {DatePicker} from '@davidgovea/react-native-wheel-datepicker';
 import {ITEMS} from '../state/ItemsReducer';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -40,6 +40,7 @@ const FormScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const [purchaseDate, setPurchaseDate] = useState(new Date());
   const [purchaseDateString, setPurchaseDateString] = useState('');
+  let scrollRef = useRef(null);
 
   const {theme, currency, items} = useSelector(state => ({
     theme: state.theme.color,
@@ -51,7 +52,7 @@ const FormScreen = ({navigation}) => {
     backgroundColor: theme,
   };
 
-  var warningText = isValid ? ' ' : 'Please fill in all of the fields';
+  var warningText = isValid ? ' ' : 'Please fill in name, category and price!';
 
   const getTotal = () => {
     var taxAmout = parseFloat(tax);
@@ -84,20 +85,6 @@ const FormScreen = ({navigation}) => {
 
   const addItem = async () => {
     if (!_pickDate || purchaseDateString == '') {
-      var months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ];
       var month = months.indexOf(_month) + 1;
       daystring = _day.toString();
       if (_day < 10) {
@@ -180,6 +167,7 @@ const FormScreen = ({navigation}) => {
                 category == undefined
               ) {
                 setValid(false);
+                scrollRef.scrollResponderScrollToEnd();
               } else {
                 setValid(true);
                 addItem();
@@ -192,6 +180,9 @@ const FormScreen = ({navigation}) => {
       <ScrollView
         style={styles.formContainerStyle}
         automaticallyAdjustContentInsets={false}
+        ref={ref => {
+          scrollRef = ref;
+        }}
         contentContainerStyle={styles.listContentStyle}>
         <InputWithLabel
           label={'Item Name'}
@@ -298,7 +289,7 @@ const FormScreen = ({navigation}) => {
         />
 
         {_pickDate && (
-          <View style={{backgroundColor: 'white', marginBottom: 20}}>
+          <View style={styles.datePickerContainerStyle}>
             <View style={styles.textTitleContainerStyle}>
               <Text
                 adjustsFontSizeToFit
@@ -310,7 +301,7 @@ const FormScreen = ({navigation}) => {
             <DatePicker
               mode="date"
               textColor="green"
-              style={{backgroundColor: 'white'}}
+              style={styles.datePickerStyle}
               onDateChange={pickedDate => {
                 getDateFromPicker(pickedDate);
               }}
@@ -379,7 +370,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 50,
     marginHorizontal: 30,
-    paddingBottom: 50,
+    paddingBottom: 100,
+    flexGrow: 1,
   },
   switchStyle: {
     flex: 1,
@@ -389,6 +381,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.pureRed,
     fontSize: 15,
+  },
+  datePickerContainerStyle: {
+    backgroundColor: colors.white,
+    marginBottom: 20,
+  },
+  datePickerStyle: {
+    backgroundColor: colors.white,
   },
 });
 

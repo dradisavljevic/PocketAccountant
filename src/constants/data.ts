@@ -13,6 +13,7 @@ export const currencyList = [
   {short: 'USD', name: 'US Dollar'},
   {short: 'AUD', name: 'Australian Dollar'},
   {short: 'ILS', name: 'Israeli New Shekel'},
+  {short: 'RSD', name: 'Serbian Dinar'},
   {short: 'KRW', name: 'South Korean Won'},
   {short: 'ZAR', name: 'South African Rand'},
   {short: 'TRY', name: 'Turkish Lira'},
@@ -24,15 +25,18 @@ export const currencyList = [
 
 export const themeList = [
   {color: colors.dollarBill, name: 'Dollar'},
-  {color: colors.pastelGreen, name: 'Pastel Green'},
-  {color: colors.darkPastelGreen, name: 'Dark Pastel Green'},
   {color: colors.egyptianBlue, name: 'Egyptian Blue'},
   {color: colors.pastelBlue, name: 'Pastel Blue'},
   {color: colors.pastelBrown, name: 'Pastel Brown'},
-  {color: colors.pastelPink, name: 'Pastel Pink'},
   {color: colors.darkPastelPurple, name: 'Dark Pastel Purple'},
-  {color: colors.pastelRed, name: 'Pastel Red'},
   {color: colors.pastelOrange, name: 'Pastel Orange'},
+  {color: colors.chimeraGreen, name: 'Chimera Green'},
+  {color: colors.lipstickRed, name: 'Lipstic Red'},
+  {color: colors.barossa, name: 'Barossa'},
+  {color: colors.lightCoral, name: 'Light Coral'},
+  {color: colors.lightPastelPurple, name: 'Light Pastel Purple'},
+  {color: colors.carrotOrange, name: 'Carrot Orange'},
+  {color: colors.wedgewood, name: 'Wedgewood'},
   {color: colors.black, name: 'Black'},
 ];
 
@@ -63,6 +67,7 @@ export const currencySymbols = {
   USD: '$',
   AUD: 'AU$',
   ILS: '₪',
+  RSD: 'РСД',
   KRW: '₩',
   ZAR: 'R',
   TRY: '₺',
@@ -86,3 +91,18 @@ export const monthAbbrev = {
   10: 'Nov.',
   11: 'Dec.',
 };
+
+export const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
