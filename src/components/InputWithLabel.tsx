@@ -74,7 +74,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
 
 const styles = StyleSheet.create({
   inputStyle: {
-    height: 26,
+    height: 50,
     fontSize: 20,
     paddingLeft: 10,
   },
@@ -86,12 +86,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   containerStyle: {
-    paddingVertical: 15,
+    paddingVertical: 5,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.davySGrey,
+    marginTop: 5,
+    marginBottom: 20,
   },
 });
 

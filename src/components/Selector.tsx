@@ -37,7 +37,7 @@ const Selector = ({
     }
     return (
       <Icon
-        style={styles.categoryIconStyle}
+        style={styles.selectedCategoryIconStyle}
         name={icon}
         size={25}
         color={colors.black}
@@ -102,7 +102,7 @@ const Selector = ({
             condition={selectorType == 'category'}
             then={
               <Icon
-                style={styles.categoryIconStyle}
+                style={styles.selectedCategoryIconStyle}
                 name={item.icon}
                 size={25}
                 color={colors.black}
@@ -230,17 +230,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     flexDirection: 'row',
+    marginBottom: 20,
   },
   buttonTextStyle: {
     fontSize: 18,
   },
-  categoryIconStyle: {
+  selectedCategoryIconStyle: {
     width: 45,
     paddingRight: 10,
     paddingLeft: 10,
   },
   optionTextStyle: {
-    color: colors.pureBlue,
+    color: colors.dodgerBlue,
     fontSize: 18,
     textAlign: 'center',
     flex: 1,

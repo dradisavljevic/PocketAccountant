@@ -13,10 +13,13 @@ const SaveButton = ({title, onPress}) => {
 const styles = StyleSheet.create({
   buttonContainerStyle: {
     padding: 5,
+    marginRight: 5,
+    width: 60,
   },
   buttonTextStyle: {
     fontSize: 18,
-    color: colors.pureBlue,
+    fontWeight: 'bold',
+    color: colors.white,
   },
 });
 

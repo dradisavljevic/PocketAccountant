@@ -8,6 +8,7 @@ import {setNavigator} from './utils/navigationRef';
 import CalendarScreen from './screens/CalendarScreen';
 import DayScreen from './screens/DayScreen';
 import FormScreen from './screens/FormScreen';
+import ReportScreen from './screens/ReportScreen';
 
 const switchNavigator = createStackNavigator({
   Calendar: {
@@ -39,6 +40,18 @@ const switchNavigator = createStackNavigator({
       },
     },
   ),
+  FormDate: {
+    screen: FormScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  Report: {
+    screen: ReportScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
 });
 
 const App = createAppContainer(switchNavigator);

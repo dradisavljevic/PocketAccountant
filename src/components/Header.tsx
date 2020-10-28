@@ -9,12 +9,13 @@ import {THEME} from '../state/ThemeReducer';
 import {CURRENCY} from '../state/CurrencyReducer';
 import {currencyList, themeList} from '../constants/data';
 import If from '../utils/conditional';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
   let menuRef = useRef(null);
   const {theme, currency} = useSelector(state => ({
-    theme: state.theme,
-    currency: state.currency,
+    theme: state.theme.color,
+    currency: state.currency.short,
   }));
   const dispatch = useDispatch();
 
@@ -22,12 +23,14 @@ const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
     menuRef = ref;
   };
 
-  const dispatchTheme = color => {
+  const dispatchTheme = async color => {
     dispatch({type: THEME, payload: color});
+    await AsyncStorage.setItem('theme', color);
   };
 
-  const dispatchCurrency = short => {
+  const dispatchCurrency = async short => {
     dispatch({type: CURRENCY, payload: short});
+    await AsyncStorage.setItem('currency', short);
   };
 
   const closeMenu = () => {
@@ -35,7 +38,7 @@ const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
   };
 
   const themeColorStyle = {
-    backgroundColor: theme.color,
+    backgroundColor: theme,
   };
 
   return (
@@ -114,9 +117,10 @@ const styles = StyleSheet.create({
     flex: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingRight: 15,
   },
   headerTitleStyle: {
-    fontSize: 32,
+    fontSize: 22,
     color: colors.white,
   },
   rightContainerStyle: {
