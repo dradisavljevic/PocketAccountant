@@ -259,7 +259,6 @@ const FormScreen = ({navigation}) => {
               value={addTax}
               onValueChange={() => setAddTax(!addTax)}
               trackColor={{true: theme, false: colors.middleGrey}}
-              thumbColor={theme}
             />
           </View>
         </View>
