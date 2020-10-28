@@ -103,7 +103,8 @@ const FormScreen = ({navigation}) => {
     if (addTax) {
       taxAmount = tax;
     }
-    if (data[date]) {
+    console.log(date);
+    if (data && data[date]) {
       data[date].push({
         id: id,
         category: getCategory(category),
@@ -114,6 +115,7 @@ const FormScreen = ({navigation}) => {
         currency: currency,
       });
     } else {
+      data = {};
       data[date] = [
         {
           id: id,
