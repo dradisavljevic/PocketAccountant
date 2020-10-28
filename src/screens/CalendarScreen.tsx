@@ -1,14 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import {useSelector} from 'react-redux';
-import {Text, View, Button, StyleSheet, ScrollView} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  Text,
+  View,
+  Button,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import icons from '../constants/icons';
 import colors from '../constants/colors';
 import CalendarDate from '../components/CalendarDate';
 import Header from '../components/Header';
-import {currencySymbols} from '../constants/data';
+import {currencySymbols, monthAbbrev} from '../constants/data';
 import exchangeApi from '../api/api';
 import ModalField from '../components/ModalField';
+import AsyncStorage from '@react-native-community/async-storage';
+import {THEME} from '../state/ThemeReducer';
+import {CURRENCY} from '../state/CurrencyReducer';
+import {ITEMS} from '../state/ItemsReducer';
 
 const CalendarScreen = ({navigation}) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -30,26 +42,57 @@ const CalendarScreen = ({navigation}) => {
   const [activeDate, setActiveDate] = useState(new Date());
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [budget, setBudget] = useState(100000);
-  const {theme, currency} = useSelector(state => ({
+  const {theme, currency, items} = useSelector(state => ({
     theme: state.theme.color,
     currency: state.currency.short,
+    items: state.items,
   }));
+  const dispatch = useDispatch();
 
-  const getList = async () => {
-    const response = await exchangeApi
-      .get()
-      .then(response => {
-        const data = response.data;
-        console.log(data);
-      })
-      .catch(error => {
-        console.log(error.message);
-      });
-  };
+  // const getRates = async () => {
+  //   const response = await exchangeApi
+  //     .get(`2010-01-12?base=${currency}`)
+  //     .then(response => {
+  //       const data = response.data;
+  //       for (var key in data.rates) {
+  //           if (currencySymbols.hasOwnProperty(key)) {
+  //               console.log(key, ':', data.rates[key]);
+  //           }
+  //       };
+  //       console.log(data.base);
+  //     })
+  //     .catch(error => {
+  //       console.log(error.message);
+  //     });
+  // };
+  //
+  // useEffect(() => {
+  //   getRates();
+  // }, [currency]);
 
   useEffect(() => {
-    getList();
+    getStoredInformation();
   }, []);
+
+  const getStoredInformation = async () => {
+    try {
+      storedTheme = await AsyncStorage.getItem('theme');
+      storedCurrency = await AsyncStorage.getItem('currency');
+      data = await AsyncStorage.getItem('items', (error, result) => {
+        dispatch({type: ITEMS, payload: JSON.parse(result)});
+      });
+      console.log(data);
+      if (storedTheme) {
+        dispatch({type: THEME, payload: storedTheme});
+      }
+      if (storedCurrency) {
+        dispatch({type: CURRENCY, payload: storedCurrency});
+      }
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+  };
 
   const generateMatrix = () => {
     var matrix = [];
@@ -158,36 +201,67 @@ const CalendarScreen = ({navigation}) => {
         style={styles.scrollContainerStyle}
         contentContainerStyle={styles.scrollContainerItemsStyle}>
         <View style={styles.monthContainerStyle}>
-          <Icon
-            style={styles.iconStyle}
-            name={'angle-left'}
-            size={25}
-            color={theme}
+          <TouchableOpacity
             onPress={() => changeMonth(-1)}
-          />
+            disabled={
+              calendarDate.getFullYear() == 2000 && calendarDate.getMonth() == 0
+            }>
+            <Icon
+              style={styles.iconStyle}
+              name={'angle-left'}
+              size={25}
+              color={
+                calendarDate.getFullYear() == 2000 &&
+                calendarDate.getMonth() == 0
+                  ? colors.lightGray
+                  : theme
+              }
+            />
+          </TouchableOpacity>
           <View style={styles.monthNameContainerStyle}>
             <Text style={styles.monthNameTextStyle}>
               {months[calendarDate.getMonth()]} &nbsp;
               {calendarDate.getFullYear()}
             </Text>
           </View>
-          <Icon
-            style={styles.iconStyle}
-            name={'angle-right'}
-            size={25}
-            color={theme}
-            onPress={() => changeMonth(1)}
-          />
+          <TouchableOpacity onPress={() => changeMonth(1)}>
+            <Icon
+              style={styles.iconStyle}
+              name={'angle-right'}
+              size={25}
+              color={theme}
+            />
+          </TouchableOpacity>
         </View>
-        <View style={{alignItems: 'center', marginVertical: 10}}>
-          <Text style={{textDecorationLine: 'underline', fontSize: 16}}>
-            Month's Budget: {budget} {currencySymbols[currency]}
-          </Text>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('FormDate', {
+              _year: calendarDate.getFullYear(),
+              _month: months[calendarDate.getMonth()],
+              _day: calendarDate.getDate(),
+              _pickDate: true,
+            });
+          }}
+          style={[styles.buttonStyle]}>
+          <Text style={styles.buttonTextStyle}>Add New Purchase</Text>
+        </TouchableOpacity>
         {rows}
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-          <Button title={"Today's Date"} onPress={() => goToToday()} />
-          <ModalField buttonText={"Edit Month's Budget"} />
+          <TouchableOpacity
+            onPress={() => goToToday()}
+            style={[styles.buttonStyle]}>
+            <Text style={styles.buttonTextStyle}>Go To Today</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Report', {
+                _year: calendarDate.getFullYear(),
+                _month: months[calendarDate.getMonth()],
+              });
+            }}
+            style={[styles.buttonStyle]}>
+            <Text style={styles.buttonTextStyle}>View Month's Report</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -225,6 +299,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+  },
+  buttonStyle: {
+    backgroundColor: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+    flexDirection: 'row',
+  },
+  buttonTextStyle: {
+    fontSize: 18,
+    color: colors.dodgerBlue,
   },
 });
 

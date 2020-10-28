@@ -3,7 +3,15 @@ import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
 
-const Item = ({name, price, category, deleteAction}) => (
+const Item = ({
+  name,
+  price,
+  category,
+  currency,
+  deleteAction,
+  quantity,
+  tax,
+}) => (
   <View style={styles.containerStyle}>
     <Icon
       style={styles.iconStyle}
@@ -12,8 +20,12 @@ const Item = ({name, price, category, deleteAction}) => (
       color={colors.black}
     />
     <View style={styles.itemWrapperStyle}>
-      <Text style={styles.nameStyle}>{name}</Text>
-      <Text style={styles.priceStyle}>¥{price}</Text>
+      <Text style={styles.nameStyle} adjustsFontSizeToFit numberOfLines={1}>
+        {name} x {quantity}
+      </Text>
+      <Text style={styles.priceStyle}>
+        {price} {currency} {tax ? `(+ ${tax}% tax)` : ''}
+      </Text>
     </View>
     <Icon
       style={styles.iconStyle}

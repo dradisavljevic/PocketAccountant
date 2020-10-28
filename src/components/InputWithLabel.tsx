@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.davySGrey,
+    marginBottom: 25,
   },
 });
 

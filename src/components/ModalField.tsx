@@ -13,10 +13,11 @@ import colors from '../constants/colors';
 import InputWithLabel from './InputWithLabel';
 import {currencySymbols} from '../constants/data';
 
-const ModalField = ({buttonText}) => {
+const ModalField = ({buttonText, fieldLabel}) => {
   const [showModal, setShowModal] = useState(false);
   const [text, setText] = useState('');
   const cancelationText = 'Cancel';
+  const saveText = 'Save Budget';
   const currency = useSelector(state => state.currency.short);
 
   return (
@@ -29,15 +30,9 @@ const ModalField = ({buttonText}) => {
         <ScrollView
           style={styles.overlayStyle}
           contentContainerStyle={styles.overlayItemsStyle}>
-          <View
-            style={{
-              marginBottom: 30,
-              backgroundColor: colors.white,
-              padding: 10,
-              borderRadius: 5,
-            }}>
+          <View style={styles.inputContainerStyle}>
             <InputWithLabel
-              label={`Budget (${currencySymbols[currency]})`}
+              label={fieldLabel}
               value={text}
               onKeyPress={event => {
                 if (Number.isNaN(Number(event.nativeEvent.key))) {
@@ -59,6 +54,19 @@ const ModalField = ({buttonText}) => {
             />
           </View>
           <View style={styles.cancelContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowModal(false);
+              }}
+              accessible={true}
+              accessibilityLabel={'Cancel'}
+              accessibilityHint={
+                'Closes the screen without picking any option'
+              }>
+              <View style={styles.saveStyle}>
+                <Text style={styles.saveTextStyle}>{saveText}</Text>
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 setShowModal(false);
@@ -98,6 +106,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 20,
   },
+  inputContainerStyle: {
+    marginBottom: 20,
+    backgroundColor: colors.white,
+    padding: 10,
+    borderRadius: 5,
+  },
   cancelStyle: {
     borderRadius: 5,
     backgroundColor: colors.white,
@@ -111,6 +125,17 @@ const styles = StyleSheet.create({
     color: colors.pureRed,
     fontSize: 16,
   },
+  saveStyle: {
+    borderRadius: 5,
+    backgroundColor: colors.white,
+    padding: 12,
+    marginBottom: 10,
+  },
+  saveTextStyle: {
+    textAlign: 'center',
+    color: colors.dodgerBlue,
+    fontSize: 16,
+  },
   buttonStyle: {
     backgroundColor: colors.white,
     justifyContent: 'center',
@@ -120,7 +145,8 @@ const styles = StyleSheet.create({
   },
   buttonTextStyle: {
     fontSize: 18,
-    color: colors.pureBlue,
+    color: colors.dodgerBlue,
+    textDecorationLine: 'underline',
   },
 });
 

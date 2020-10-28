@@ -23,6 +23,7 @@ const colors: ColorPalette = {
   silver: '#AAA9AD',
   transparentBlack: 'rgba(0,0,0,0.7)',
   transparentGray: 'rgba(80,80,80,0.7)',
+  dodgerBlue: '#0077FF',
 };
 
 export default colors;
