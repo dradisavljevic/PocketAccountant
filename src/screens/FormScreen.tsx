@@ -259,6 +259,7 @@ const FormScreen = ({navigation}) => {
               value={addTax}
               onValueChange={() => setAddTax(!addTax)}
               trackColor={{true: theme, false: colors.middleGrey}}
+              thumbColor={theme}
             />
           </View>
         </View>
@@ -300,7 +301,7 @@ const FormScreen = ({navigation}) => {
             </View>
             <DatePicker
               mode="date"
-              textColor="green"
+              textColor={colors.black}
               style={styles.datePickerStyle}
               onDateChange={pickedDate => {
                 getDateFromPicker(pickedDate);
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   textTitleStyle: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
   },
   quantityButtonsContainerStyle: {

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
-import {View, TextInput, Animated, StyleSheet} from 'react-native';
+import {View, TextInput, Animated, StyleSheet, Platform} from 'react-native';
 import colors from '../constants/colors';
 
 const InputWithLabel: FC<Props> = ({label, ...props}) => {
@@ -53,7 +53,11 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
         {label}
       </Animated.Text>
       <TextInput
-        style={[styles.inputStyle, textColorStyle]}
+        style={[
+          styles.inputStyle,
+          textColorStyle,
+          {height: Platform.OS == 'android' ? 50 : 20},
+        ]}
         {...props}
         onFocus={() => setFocued(true)}
         onBlur={() => {
@@ -86,13 +90,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   containerStyle: {
-    paddingVertical: 15,
+    paddingVertical: 5,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.davySGrey,
-    marginBottom: 25,
+    marginTop: 5,
+    marginBottom: 20,
   },
 });
 

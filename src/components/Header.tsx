@@ -117,9 +117,10 @@ const styles = StyleSheet.create({
     flex: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingRight: 15,
   },
   headerTitleStyle: {
-    fontSize: 32,
+    fontSize: 22,
     color: colors.white,
   },
   rightContainerStyle: {

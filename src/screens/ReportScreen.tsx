@@ -48,10 +48,11 @@ const ReportScreen = ({navigation}) => {
         daystring = '0' + day.toString();
       }
       date = daystring + '-' + monthstring + '-' + _year.toString();
-      if (items.items[date]) {
+      if (items.items) {
         dataset = dataset.concat(items.items[date]);
       }
     });
+
     setData(dataset);
   }, [items]);
 
@@ -217,7 +218,7 @@ const ReportScreen = ({navigation}) => {
       forceInset={{top: 'always'}}
       style={[styles.backgroundStyle, themeColorStyle]}>
       <Header
-        title={`Spending Report for ${_month} ${_year}`}
+        title={`Report ${_month} ${_year}`}
         onPress={() => navigation.goBack(null)}
         icon={'arrow-left'}
         showBackButton={true}

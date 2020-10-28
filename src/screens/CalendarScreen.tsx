@@ -206,7 +206,7 @@ const CalendarScreen = ({navigation}) => {
             });
           }}
           style={[styles.buttonStyle]}>
-          <Text style={styles.buttonTextStyle}>Add New Purchase</Text>
+          <Text style={styles.buttonTextStyle}>Add New Item</Text>
         </TouchableOpacity>
         {rows}
         <View style={styles.rowStyle}>

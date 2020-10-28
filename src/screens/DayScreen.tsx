@@ -36,7 +36,9 @@ const DayScreen = ({navigation}) => {
       monthstring = '0' + month.toString();
     }
     date = daystring + '-' + monthstring + '-' + _year.toString();
-    setData(items.items[date]);
+    if (items.items) {
+      setData(items.items[date]);
+    }
   }, [items]);
 
   const getCumulativePrice = () => {
