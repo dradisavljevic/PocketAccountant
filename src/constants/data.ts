@@ -50,6 +50,7 @@ export const categoryList = [
   {icon: icons.healthcare, name: 'Healthcare'},
   {icon: icons.lifestyle, name: 'Lifestyle'},
   {icon: icons.technology, name: 'Technology'},
+  {icon: icons.games, name: 'Entertainment'},
   {icon: icons.bills, name: 'Bills'},
   {icon: icons.gifts, name: 'Gifts'},
   {icon: icons.miscellaneous, name: 'Other'},

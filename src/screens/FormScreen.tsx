@@ -52,7 +52,9 @@ const FormScreen = ({navigation}) => {
     backgroundColor: theme,
   };
 
-  var warningText = isValid ? ' ' : 'Please fill in name, category and price!';
+  var warningText = isValid
+    ? ' '
+    : 'Please fill in the name, price and category!';
 
   const getTotal = () => {
     var taxAmout = parseFloat(tax);
@@ -103,7 +105,6 @@ const FormScreen = ({navigation}) => {
     if (addTax) {
       taxAmount = tax;
     }
-    console.log(date);
     if (data && data[date]) {
       data[date].push({
         id: id,

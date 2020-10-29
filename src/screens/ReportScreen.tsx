@@ -48,11 +48,10 @@ const ReportScreen = ({navigation}) => {
         daystring = '0' + day.toString();
       }
       date = daystring + '-' + monthstring + '-' + _year.toString();
-      if (items.items) {
+      if (items.items && items.items[date]) {
         dataset = dataset.concat(items.items[date]);
       }
     });
-
     setData(dataset);
   }, [items]);
 
@@ -122,7 +121,7 @@ const ReportScreen = ({navigation}) => {
           <Text
             style={styles.headerTextStyle}
             adjustsFontSizeToFit
-            numberOfLines={1}>
+            numberOfLines={2}>
             Purchase Report for {name}:
           </Text>
         </View>
@@ -179,7 +178,7 @@ const ReportScreen = ({navigation}) => {
       currencyPlurality =
         Object.keys(sums).length > 1 ? 'currencies' : 'currency';
       currencyOverview =
-        'You purchased in ' +
+        'You have purchased in ' +
         Object.keys(sums).length.toString() +
         ' ' +
         currencyPlurality +

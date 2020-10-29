@@ -15,8 +15,6 @@ import colors from '../constants/colors';
 import CalendarDate from '../components/CalendarDate';
 import Header from '../components/Header';
 import {currencySymbols, monthAbbrev, months} from '../constants/data';
-import exchangeApi from '../api/api';
-import ModalField from '../components/ModalField';
 import AsyncStorage from '@react-native-community/async-storage';
 import {THEME} from '../state/ThemeReducer';
 import {CURRENCY} from '../state/CurrencyReducer';
@@ -43,7 +41,9 @@ const CalendarScreen = ({navigation}) => {
       storedTheme = await AsyncStorage.getItem('theme');
       storedCurrency = await AsyncStorage.getItem('currency');
       data = await AsyncStorage.getItem('items', (error, result) => {
-        dispatch({type: ITEMS, payload: JSON.parse(result)});
+        if (result != null) {
+          dispatch({type: ITEMS, payload: JSON.parse(result)});
+        }
       });
       if (storedTheme) {
         dispatch({type: THEME, payload: storedTheme});

@@ -56,6 +56,12 @@ const switchNavigator = createStackNavigator({
 
 const App = createAppContainer(switchNavigator);
 
+if (__DEV__) {
+  import('./config/ReactotronConfig').then(() =>
+    console.log('Reactotron Configured'),
+  );
+}
+
 export default () => {
   return (
     <Provider store={Store}>

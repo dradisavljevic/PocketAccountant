@@ -1,6 +1,5 @@
 export const getSpendingByCurrency = data => {
   let sums = {};
-
   for (var itemIndex in data) {
     if (data[itemIndex].currency in sums) {
       sums[data[itemIndex].currency] +=

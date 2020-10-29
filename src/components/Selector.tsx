@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   selectedCategoryIconStyle: {
-    width: 45,
+    width: 55,
     paddingRight: 10,
     paddingLeft: 10,
   },

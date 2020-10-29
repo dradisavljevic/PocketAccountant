@@ -63,7 +63,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
           }
         }}
         blurOnSubmit
-        autoCapitalize={'none'}
+        autoCapitalize={'sentences'}
         autoCorrect={false}
         autoCompleteType={'off'}
         selectionColor={theme}
