@@ -20,7 +20,7 @@ const Item = ({
       color={colors.black}
     />
     <View style={styles.itemWrapperStyle}>
-      <Text style={styles.nameStyle} adjustsFontSizeToFit numberOfLines={1}>
+      <Text style={styles.nameStyle} adjustsFontSizeToFit numberOfLines={2}>
         {name} x {quantity}
       </Text>
       <Text style={styles.priceStyle}>
@@ -28,7 +28,7 @@ const Item = ({
       </Text>
     </View>
     <Icon
-      style={styles.iconStyle}
+      style={[styles.iconStyle, {marginLeft: 15}]}
       hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}
       name={'trash'}
       size={25}

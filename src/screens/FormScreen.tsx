@@ -19,7 +19,12 @@ import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import QuantityButton from '../components/QuantityButton';
 import uuid from 'react-native-uuid';
-import {categoryList, currencySymbols, months} from '../constants/data';
+import {
+  categoryList,
+  currencySymbols,
+  months,
+  roundedUpCurrencies,
+} from '../constants/data';
 import {DatePicker} from '@davidgovea/react-native-wheel-datepicker';
 import {ITEMS} from '../state/ItemsReducer';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -74,6 +79,14 @@ const FormScreen = ({navigation}) => {
 
     total = total % 1 == 0 ? total.toFixed(0) : total.toFixed(2);
 
+    if (roundedUpCurrencies.includes(currency)) {
+      if (currency === 'JPY') {
+        total = Math.floor(total);
+      } else {
+        total = Math.round(total);
+      }
+    }
+
     return total;
   };
 
@@ -116,7 +129,6 @@ const FormScreen = ({navigation}) => {
         currency: currency,
       });
     } else {
-      data = {};
       data[date] = [
         {
           id: id,

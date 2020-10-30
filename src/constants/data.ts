@@ -107,3 +107,5 @@ export const months = [
   'November',
   'December',
 ];
+
+export const roundedUpCurrencies = ['JPY', 'RSD', 'KRW', 'NOK', 'SEK'];
