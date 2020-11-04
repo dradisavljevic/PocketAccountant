@@ -171,3 +171,33 @@ export const getMostExpensiveItem = data => {
 
   return items;
 };
+
+export const getProductTotal = (tax, price, quantity, currency, hasTax) => {
+  var taxAmout = parseFloat(tax);
+  var priceAmount = parseFloat(price);
+  quantity = parseInt(quantity);
+
+  if (Number.isNaN(taxAmout) || !hasTax) {
+    taxAmout = 0;
+  } else {
+    taxAmout = taxAmout / 100;
+  }
+
+  if (Number.isNaN(priceAmount)) {
+    priceAmount = 0;
+  }
+
+  total = (priceAmount + priceAmount * taxAmout) * quantity;
+
+  total = total % 1 == 0 ? total.toFixed(0) : total.toFixed(2);
+
+  if (roundedUpCurrencies.includes(currency)) {
+    if (currency === 'JPY') {
+      total = Math.floor(total);
+    } else {
+      total = Math.round(total);
+    }
+  }
+
+  return total;
+};

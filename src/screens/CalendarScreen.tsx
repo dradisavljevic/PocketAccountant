@@ -199,9 +199,9 @@ const CalendarScreen = ({navigation}) => {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('FormDate', {
-              _year: calendarDate.getFullYear(),
-              _month: months[calendarDate.getMonth()],
-              _day: calendarDate.getDate(),
+              _year: activeDate.getFullYear(),
+              _month: months[activeDate.getMonth()],
+              _day: activeDate.getDate(),
               _pickDate: true,
             });
           }}

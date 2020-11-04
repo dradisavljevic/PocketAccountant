@@ -31,6 +31,7 @@ const colors: ColorPalette = {
   barossa: '#53303F',
   carrotOrange: '#EF941F',
   wedgewood: '#506F8B',
+  gray: '#808080',
 };
 
 export default colors;

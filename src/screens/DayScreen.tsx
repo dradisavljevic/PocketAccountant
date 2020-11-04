@@ -131,7 +131,7 @@ const DayScreen = ({navigation}) => {
             name={item.name}
             price={item.price}
             category={item.category}
-            currency={currencySymbols[item.currency]}
+            currency={item.currency}
             quantity={item.quantity}
             tax={item.tax}
             deleteAction={() => deleteItemById(item.id)}

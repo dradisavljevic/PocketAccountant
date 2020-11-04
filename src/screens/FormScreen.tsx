@@ -28,6 +28,7 @@ import {
 import {DatePicker} from '@davidgovea/react-native-wheel-datepicker';
 import {ITEMS} from '../state/ItemsReducer';
 import AsyncStorage from '@react-native-community/async-storage';
+import {getProductTotal} from '../utils/helperFunctions';
 
 const FormScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -60,35 +61,6 @@ const FormScreen = ({navigation}) => {
   var warningText = isValid
     ? ' '
     : 'Please fill in the name, price and category!';
-
-  const getTotal = () => {
-    var taxAmout = parseFloat(tax);
-    var priceAmount = parseFloat(price);
-
-    if (Number.isNaN(taxAmout) || !addTax) {
-      taxAmout = 0;
-    } else {
-      taxAmout = taxAmout / 100;
-    }
-
-    if (Number.isNaN(priceAmount)) {
-      priceAmount = 0;
-    }
-
-    total = (priceAmount + priceAmount * taxAmout) * quantity;
-
-    total = total % 1 == 0 ? total.toFixed(0) : total.toFixed(2);
-
-    if (roundedUpCurrencies.includes(currency)) {
-      if (currency === 'JPY') {
-        total = Math.floor(total);
-      } else {
-        total = Math.round(total);
-      }
-    }
-
-    return total;
-  };
 
   const getCategory = cat => {
     for (const [key, value] of Object.entries(categoryList)) {
@@ -336,7 +308,8 @@ const FormScreen = ({navigation}) => {
           </View>
           <View>
             <Text>
-              {getTotal()} {currencySymbols[currency]}
+              {getProductTotal(tax, price, quantity, currency, addTax)}{' '}
+              {currencySymbols[currency]}
             </Text>
           </View>
         </View>

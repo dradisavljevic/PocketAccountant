@@ -2,6 +2,9 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
+import {getProductTotal} from '../utils/helperFunctions';
+import {currencySymbols} from '../constants/data';
+import If from '../utils/conditional';
 
 const Item = ({
   name,
@@ -24,8 +27,24 @@ const Item = ({
         {name} x {quantity}
       </Text>
       <Text style={styles.priceStyle}>
-        {price} {currency} {tax ? `(+ ${tax}% tax)` : ''}
+        {price} {currencySymbols[currency]} {tax ? `(+ ${tax}% tax)` : ''}
       </Text>
+      <If
+        condition={tax != 0 || quantity > 1}
+        then={
+          <Text style={styles.priceTotalStyle}>
+            Total:{' '}
+            {getProductTotal(
+              tax,
+              price,
+              quantity,
+              currency,
+              tax ? true : false,
+            )}{' '}
+            {currencySymbols[currency]}
+          </Text>
+        }
+      />
     </View>
     <Icon
       style={[styles.iconStyle, {marginLeft: 15}]}
@@ -53,11 +72,17 @@ const styles = StyleSheet.create({
   },
   nameStyle: {
     fontSize: 22,
-    color: 'black',
+    color: colors.black,
   },
   priceStyle: {
     fontSize: 16,
-    color: 'gray',
+    color: colors.gray,
+  },
+  priceTotalStyle: {
+    fontSize: 15,
+    color: colors.gray,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
   itemWrapperStyle: {
     flex: 1,
