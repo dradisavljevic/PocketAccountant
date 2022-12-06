@@ -1,8 +1,10 @@
 import React from 'react';
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, GestureResponderEvent} from 'react-native';
 import colors from '../constants/colors';
 
-const SaveButton = ({title, onPress}) => {
+type SaveButtonProps = {onPress: (event: GestureResponderEvent) => void};
+
+const SaveButton = ({onPress}: SaveButtonProps) => {
   return (
     <TouchableOpacity style={styles.buttonContainerStyle} onPress={onPress}>
       <Text style={styles.buttonTextStyle}>Save</Text>

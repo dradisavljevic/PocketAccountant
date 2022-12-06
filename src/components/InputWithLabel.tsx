@@ -1,19 +1,41 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
-import {View, TextInput, Animated, StyleSheet} from 'react-native';
+import {
+  View,
+  TextInput,
+  Animated,
+  StyleSheet,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
+  TextInputChangeEventData,
+  KeyboardTypeOptions,
+} from 'react-native';
 import colors from '../constants/colors';
+import {RootState} from '../state/Store';
 
-const InputWithLabel: FC<Props> = ({label, ...props}) => {
+type LabelProps = {
+  label: string;
+  value: string;
+  editable: boolean;
+  maxLength?: number;
+  keyboardType?: KeyboardTypeOptions | undefined;
+  onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
+  onChangeText?: (text: string) => void;
+  onChange?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+};
+
+const InputWithLabel = ({label, ...props}: LabelProps) => {
   const [focused, setFocued] = useState(false);
   const [animationStart, setAnimationStart] = useState(
     props.value == '' ? new Animated.Value(1) : new Animated.Value(0),
   );
-  const theme = useSelector(state => state.theme.color);
+  const theme = useSelector((state: RootState) => state.theme.color);
 
   useEffect(() => {
     Animated.timing(animationStart, {
       toValue: focused || props.value !== '' ? 1 : 0,
       duration: 200,
+      useNativeDriver: false,
     }).start();
   }, [focused]);
 
@@ -65,7 +87,7 @@ const InputWithLabel: FC<Props> = ({label, ...props}) => {
         blurOnSubmit
         autoCapitalize={'sentences'}
         autoCorrect={false}
-        autoCompleteType={'off'}
+        autoComplete={'off'}
         selectionColor={theme}
       />
     </View>

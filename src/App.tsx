@@ -1,75 +1,47 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Provider} from 'react-redux';
 import Store from './state/Store';
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import {setNavigator} from './utils/navigationRef';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import CalendarScreen from './screens/CalendarScreen';
 import DayScreen from './screens/DayScreen';
 import FormScreen from './screens/FormScreen';
 import ReportScreen from './screens/ReportScreen';
+import {StackParamList} from './utils/navigationTypes';
 
-const switchNavigator = createStackNavigator({
-  Calendar: {
-    screen: CalendarScreen,
-    navigationOptions: {
-      header: null,
-    },
-  },
-  ListFlow: createStackNavigator(
-    {
-      Day: {
-        screen: DayScreen,
-        navigationOptions: {
-          header: null,
-        },
-      },
-      Form: {
-        screen: FormScreen,
-        navigationOptions: {
-          header: null,
-        },
-      },
-    },
-    {
-      mode: 'modal',
-      headerMode: 'none',
-      navigationOptions: {
-        header: null,
-      },
-    },
-  ),
-  FormDate: {
-    screen: FormScreen,
-    navigationOptions: {
-      header: null,
-    },
-  },
-  Report: {
-    screen: ReportScreen,
-    navigationOptions: {
-      header: null,
-    },
-  },
-});
-
-const App = createAppContainer(switchNavigator);
-
-if (__DEV__) {
-  import('./config/ReactotronConfig').then(() =>
-    console.log('Reactotron Configured'),
-  );
-}
+const Stack = createNativeStackNavigator<StackParamList>();
 
 export default () => {
   return (
     <Provider store={Store}>
-      <App
-        ref={navigator => {
-          setNavigator(navigator);
-        }}
-      />
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Calendar"
+              options={{headerShown: false}}
+              component={CalendarScreen}
+            />
+            <Stack.Screen
+              name="Day"
+              options={{headerShown: false}}
+              component={DayScreen}
+            />
+            <Stack.Screen
+              name="Form"
+              options={{headerShown: false}}
+              component={FormScreen}
+            />
+            <Stack.Screen
+              name="Report"
+              options={{headerShown: false}}
+              component={ReportScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
     </Provider>
   );
 };

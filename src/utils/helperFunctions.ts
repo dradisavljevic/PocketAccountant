@@ -1,9 +1,13 @@
 import {roundedUpCurrencies} from '../constants/data';
 
-export const getSpendingByCurrency = data => {
-  let sums = {};
+type SumsDictionaryType = {
+  [key: string]: number
+}
+
+export const getSpendingByCurrency = (data: Array<any>) => {
+  let sums: SumsDictionaryType = {};
   let sum = 0;
-  for (var itemIndex in data) {
+  for (let itemIndex in data) {
     if (data[itemIndex].currency in sums) {
       sum =
         data[itemIndex].quantity *
@@ -40,11 +44,11 @@ export const getSpendingByCurrency = data => {
   return sums;
 };
 
-export const getInformationByCategory = data => {
-  let categorizedSums = {};
+export const getInformationByCategory = (data: Array<any>) => {
+  let categorizedSums: any = {};
   let price = 0;
 
-  for (var itemIndex in data) {
+  for (let itemIndex in data) {
     if (data[itemIndex].currency in categorizedSums) {
       if (
         data[itemIndex].category in categorizedSums[data[itemIndex].currency]
@@ -129,12 +133,12 @@ export const getInformationByCategory = data => {
   return categorizedSums;
 };
 
-export const getMostExpensiveItem = data => {
-  let items = {};
+export const getMostExpensiveItem = (data: Array<any>) => {
+  let items: any = {};
 
-  for (var itemIndex in data) {
+  for (let itemIndex in data) {
     if (data[itemIndex].currency in items) {
-      price =
+      let price =
         data[itemIndex].price +
         ((data[itemIndex].price * 1.0) / 100) * data[itemIndex].tax;
       if (roundedUpCurrencies.includes(data[itemIndex].currency)) {
@@ -152,7 +156,7 @@ export const getMostExpensiveItem = data => {
       items[data[itemIndex].currency] = {};
       items[data[itemIndex].currency].price = 0;
       items[data[itemIndex].currency].name = '';
-      price =
+      let price =
         data[itemIndex].price +
         ((data[itemIndex].price * 1.0) / 100) * data[itemIndex].tax;
       if (roundedUpCurrencies.includes(data[itemIndex].currency)) {
@@ -172,24 +176,22 @@ export const getMostExpensiveItem = data => {
   return items;
 };
 
-export const getProductTotal = (tax, price, quantity, currency, hasTax) => {
-  var taxAmout = parseFloat(tax);
-  var priceAmount = parseFloat(price);
-  quantity = parseInt(quantity);
 
-  if (Number.isNaN(taxAmout) || !hasTax) {
-    taxAmout = 0;
+export const getProductTotal = (tax: number, price: number, quantity: number, currency: string, hasTax: boolean) => {
+
+  if (Number.isNaN(tax) || !hasTax) {
+    tax = 0;
   } else {
-    taxAmout = taxAmout / 100;
+    tax = tax / 100;
   }
 
-  if (Number.isNaN(priceAmount)) {
-    priceAmount = 0;
+  if (Number.isNaN(price)) {
+    price = 0;
   }
 
-  total = (priceAmount + priceAmount * taxAmout) * quantity;
+  let total = (price + price * tax) * quantity;
 
-  total = total % 1 == 0 ? total.toFixed(0) : total.toFixed(2);
+  total = total % 1 == 0 ? +total.toFixed(0) : +total.toFixed(2);
 
   if (roundedUpCurrencies.includes(currency)) {
     if (currency === 'JPY') {

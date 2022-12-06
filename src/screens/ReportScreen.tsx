@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
-import {View, Text, FlatList, StyleSheet, ScrollView} from 'react-native';
-import {SafeAreaView} from 'react-navigation';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/Header';
 import colors from '../constants/colors';
 import {
@@ -15,49 +15,57 @@ import {
   getInformationByCategory,
   getMostExpensiveItem,
 } from '../utils/helperFunctions';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {StackParamList} from '../utils/navigationTypes';
+import { RootState } from 'state/Store';
 
-const ReportScreen = ({navigation}) => {
-  const _year = navigation.getParam('_year');
-  const _month = navigation.getParam('_month');
-  const {theme, currency, items} = useSelector(state => ({
+const ReportScreen = ({navigation, route}: NativeStackScreenProps<StackParamList, 'Report'>) => {
+  const _year = route.params._year;
+  const _month = route.params._month;
+  const {theme, currency, items} = useSelector((state: RootState) => ({
     theme: state.theme.color,
     currency: state.currency.short,
     items: state.items,
   }));
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Object[]>([]);
+  type CategoryType = { name?: string, quantity?: number, price?: number}
+  type SumsDictionaryType = {
+    [key: string]: number
+  }
 
   const themeColorStyle = {
     backgroundColor: theme,
   };
 
   useEffect(() => {
-    var month = months.indexOf(_month) + 1;
-    days = Array(31)
-      .fill()
-      .map((_, i) => i + 1);
-    dataset = [];
-    monthstring = month.toString();
+    let month = months.indexOf(_month) + 1;
+    let days = Array(31).fill(0).map((_, i) => i + 1);
+    let dataset: Object[] = [];
+    let monthstring = month.toString();
     if (month < 10) {
       monthstring = '0' + month.toString();
     }
 
-    Object.keys(days).forEach(function(key) {
-      day = days[key];
-      daystring = day.toString();
+    Object.keys(days).forEach(function(key: string) {
+      let day = days[+key];
+      let daystring = day.toString();
       if (day < 10) {
         daystring = '0' + day.toString();
       }
-      date = daystring + '-' + monthstring + '-' + _year.toString();
-      if (items.items && items.items[date]) {
-        dataset = dataset.concat(items.items[date]);
+      let date = daystring + '-' + monthstring + '-' + _year.toString();
+      if (items.items && items.items[date as keyof typeof items.items]) {
+        dataset = dataset.concat(items.items[date as keyof typeof items.items]);
       }
     });
+    
     setData(dataset);
   }, [items]);
 
-  const getFullOverview = (sums, categorizedSums, mostExpensiveItems) => {
-    var rows = [];
-    for (var key in sums) {
+  const getFullOverview = (sums: SumsDictionaryType, categorizedSums: {[key: string]: Array<CategoryType>}, mostExpensiveItems: {[key: string]: CategoryType}) => {
+    let rows = [];
+    
+    for (let key in sums) {
+      
       rows.push(
         getCurrencyReport(
           key,
@@ -69,27 +77,27 @@ const ReportScreen = ({navigation}) => {
     }
     return <View>{rows}</View>;
   };
-
-  const getCategoryInformation = categorizedSums => {
-    mostCommonCategory = {};
-    mostExpensiveCategory = {};
+  
+  const getCategoryInformation = (categorizedSums: Array<CategoryType>) => {
+    let mostCommonCategory: CategoryType = {};
+    let mostExpensiveCategory: CategoryType = {};
     mostCommonCategory.name = '';
     mostCommonCategory.quantity = 0;
     mostExpensiveCategory.name = '';
     mostExpensiveCategory.price = 0;
-    for (var key in categorizedSums) {
-      quantity = categorizedSums[key].quantity;
-      price = categorizedSums[key].price;
-      if (quantity > mostCommonCategory.quantity) {
+    for (let key in categorizedSums) {
+      let quantity = categorizedSums[key].quantity;
+      let price = categorizedSums[key].price;
+      if (quantity! > mostCommonCategory.quantity!) {
         mostCommonCategory.name = key;
         mostCommonCategory.quantity = quantity;
       }
-      if (price > mostExpensiveCategory.price) {
+      if (price! > mostExpensiveCategory.price!) {
         mostExpensiveCategory.name = key;
         mostExpensiveCategory.price = price;
       }
     }
-    for (index in categoryList) {
+    for (let index in categoryList) {
       if (categoryList[index].icon == mostCommonCategory.name) {
         mostCommonCategory.name = categoryList[index].name;
       }
@@ -101,19 +109,19 @@ const ReportScreen = ({navigation}) => {
   };
 
   const getCurrencyReport = (
-    currency,
-    spending,
-    categorizedSums,
-    mostExpensiveItem,
+    currency: string,
+    spending: number,
+    categorizedSums: Array<CategoryType>,
+    mostExpensiveItem: CategoryType,
   ) => {
-    var currencyName = currencyList.filter(function(ob) {
+    let currencyName = currencyList.filter(function(ob) {
       return ob.short === currency;
     });
-    name = currencyName[0].name;
-    values = getCategoryInformation(categorizedSums);
-    mostCommonCat = values[0];
-    mostExpensiveCat = values[1];
-    itemPlurality = mostCommonCat.quantity > 1 ? 'Times' : 'Time';
+    let name = currencyName[0].name;
+    let values = getCategoryInformation(categorizedSums);
+    let mostCommonCat = values[0];
+    let mostExpensiveCat = values[1];
+    let itemPlurality = mostCommonCat.quantity! > 1 ? 'Times' : 'Time';
 
     return (
       <View key={currency}>
@@ -163,9 +171,9 @@ const ReportScreen = ({navigation}) => {
   };
 
   const getReport = () => {
-    sums = getSpendingByCurrency(data);
-    categorizedSums = getInformationByCategory(data);
-    mostExpensiveItems = getMostExpensiveItem(data);
+    let sums = getSpendingByCurrency(data);
+    let categorizedSums = getInformationByCategory(data);
+    let mostExpensiveItems = getMostExpensiveItem(data);
     if (Object.keys(sums).length === 0) {
       return (
         <View style={styles.blankReportContainerStyle}>
@@ -175,21 +183,20 @@ const ReportScreen = ({navigation}) => {
         </View>
       );
     } else {
-      currencyPlurality =
-        Object.keys(sums).length > 1 ? 'currencies' : 'currency';
-      currencyOverview =
+      let currencyPlurality = Object.keys(sums).length > 1 ? 'currencies' : 'currency';
+      let currencyOverview =
         'You have purchased in ' +
         Object.keys(sums).length.toString() +
         ' ' +
         currencyPlurality +
         ' this month: ';
 
-      elements = Object.keys(sums).length;
+      let elements = Object.keys(sums).length;
       if (elements > 0) {
-        var i = 0;
-        for (var key in sums) {
+        let i = 0;
+        for (let key in sums) {
           i = i + 1;
-          var currencyName = currencyList.filter(function(ob) {
+          let currencyName = currencyList.filter(function(ob) {
             return ob.short === key;
           });
           currencyOverview += currencyName[0].name;
@@ -214,11 +221,10 @@ const ReportScreen = ({navigation}) => {
 
   return (
     <SafeAreaView
-      forceInset={{top: 'always'}}
       style={[styles.backgroundStyle, themeColorStyle]}>
       <Header
         title={`Report ${_month} ${_year}`}
-        onPress={() => navigation.goBack(null)}
+        onPress={() => navigation.goBack()}
         icon={'arrow-left'}
         showBackButton={true}
       />

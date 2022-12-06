@@ -1,15 +1,19 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import {TouchableOpacity, View, Text, StyleSheet, GestureResponderEvent, StyleProp, TextStyle} from 'react-native';
 import colors from '../constants/colors';
+import {RootState} from '../state/Store';
 
-const CalendarDate = ({onPress, rowIndex, colIndex, day, isTodaysDate}) => {
-  const isOtherMonth = (rowIndex, date) => {
+type DateProps = {onPress: (event: GestureResponderEvent) => void, rowIndex: number, colIndex: number, day: string | number, isTodaysDate: Function}
+
+const CalendarDate = ({onPress, rowIndex, colIndex, day, isTodaysDate}: DateProps) => {
+  
+  const isOtherMonth = (rowIndex: number, date: number) => {
     if ((rowIndex == 1 && date > 20) || (rowIndex >= 5 && date < 15))
       return true;
     else return false;
   };
-  const theme = useSelector(state => state.theme.color);
+  const theme = useSelector((state: RootState) => state.theme.color);
 
   const daysOfWeekStyle = {
     height: rowIndex == 0 ? 30 : 60,
@@ -23,7 +27,7 @@ const CalendarDate = ({onPress, rowIndex, colIndex, day, isTodaysDate}) => {
         : colors.white,
   };
 
-  const dayTextStyle = {
+  const dayTextStyle: StyleProp<TextStyle> = {
     color:
       (isTodaysDate(day) && !isOtherMonth(rowIndex, day)) || rowIndex == 0
         ? colors.white

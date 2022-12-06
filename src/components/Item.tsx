@@ -1,10 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, GestureResponderEvent} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
 import {getProductTotal} from '../utils/helperFunctions';
 import {currencySymbols} from '../constants/data';
 import If from '../utils/conditional';
+
+type ItemProps = {name: string, price: number, category: string, currency: string, deleteAction: (event: GestureResponderEvent) => void, editAction: (event: GestureResponderEvent) => void, quantity: number, tax: number}
 
 const Item = ({
   name,
@@ -12,9 +14,10 @@ const Item = ({
   category,
   currency,
   deleteAction,
+  editAction,
   quantity,
   tax,
-}) => (
+} : ItemProps) => (
   <View style={styles.containerStyle}>
     <Icon
       style={styles.iconStyle}
@@ -48,7 +51,13 @@ const Item = ({
     </View>
     <Icon
       style={[styles.iconStyle, {marginLeft: 15}]}
-      hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}
+      name={'pen'}
+      size={25}
+      color={colors.pastelBlue}
+      onPress={editAction}
+    />
+    <Icon
+      style={[styles.iconStyle, {marginLeft: 15}]}
       name={'trash'}
       size={25}
       color={colors.pureRed}

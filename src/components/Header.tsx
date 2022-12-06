@@ -1,45 +1,47 @@
-import React, {useRef} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, GestureResponderEvent} from 'react-native';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
+import {Menu, MenuDivider} from 'react-native-material-menu';
 import Selector from './Selector';
 import {THEME} from '../state/ThemeReducer';
 import {CURRENCY} from '../state/CurrencyReducer';
 import {currencyList, themeList} from '../constants/data';
 import If from '../utils/conditional';
-import AsyncStorage from '@react-native-community/async-storage';
+import {RootState} from '../state/Store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
-  let menuRef = useRef(null);
-  const {theme, currency} = useSelector(state => ({
+type HeaderProps = { title: string, onPress?: ((event: GestureResponderEvent) => void), icon?: string, rightButton?: JSX.Element|JSX.Element[], showBackButton?: boolean }
+
+const Header = ({title, onPress, icon, rightButton, showBackButton}: HeaderProps) => {
+
+  const [visible, setVisible] = useState(false);
+  const {theme, currency} = useSelector((state: RootState) => ({
     theme: state.theme.color,
     currency: state.currency.short,
   }));
   const dispatch = useDispatch();
 
-  const setMenuRef = ref => {
-    menuRef = ref;
-  };
 
-  const dispatchTheme = async color => {
+  const dispatchTheme = async (color: string) => {
     dispatch({type: THEME, payload: color});
     await AsyncStorage.setItem('theme', color);
   };
 
-  const dispatchCurrency = async short => {
+  const dispatchCurrency = async (short: string) => {
     dispatch({type: CURRENCY, payload: short});
     await AsyncStorage.setItem('currency', short);
   };
 
-  const closeMenu = () => {
-    menuRef.hide();
-  };
 
   const themeColorStyle = {
     backgroundColor: theme,
   };
+
+  const hideMenu = () => setVisible(false);
+
+  const showMenu = () => setVisible(true);
 
   return (
     <View style={[styles.headerStyle, themeColorStyle]}>
@@ -49,7 +51,7 @@ const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
           then={
             <Icon
               style={styles.backIconStyle}
-              name={icon}
+              name={icon!}
               size={25}
               color={colors.white}
               onPress={onPress}
@@ -68,30 +70,31 @@ const Header = ({title, onPress, icon, rightButton, showBackButton}) => {
       <View style={styles.rightContainerStyle}>
         {rightButton}
         <Menu
-          ref={ref => setMenuRef(ref)}
-          button={
+          visible={visible}
+          onRequestClose={hideMenu}
+          anchor={
             <Icon
               style={styles.backIconStyle}
               name={'ellipsis-v'}
               size={25}
               color={colors.white}
-              onPress={() => menuRef.show()}
+              onPress={showMenu}
             />
           }>
           <Selector
             selectorFunction={dispatchTheme}
             defaultText={'Change Theme'}
             selectorType={'theme'}
-            cleanupFunction={closeMenu}
             data={themeList}
+            cleanupFunction={hideMenu}
           />
           <MenuDivider />
           <Selector
             selectorFunction={dispatchCurrency}
             defaultText={'Change Currency'}
             selectorType={'currency'}
-            cleanupFunction={closeMenu}
             data={currencyList}
+            cleanupFunction={hideMenu}
           />
         </Menu>
       </View>

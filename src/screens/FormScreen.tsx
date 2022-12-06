@@ -3,34 +3,32 @@ import {
   View,
   Text,
   StyleSheet,
-  Animated,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
   Switch,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {SafeAreaView} from 'react-navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import InputWithLabel from '../components/InputWithLabel';
 import colors from '../constants/colors';
 import Selector from '../components/Selector';
 import SaveButton from '../components/SaveButton';
 import Header from '../components/Header';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import QuantityButton from '../components/QuantityButton';
 import uuid from 'react-native-uuid';
 import {
   categoryList,
   currencySymbols,
   months,
-  roundedUpCurrencies,
 } from '../constants/data';
-import {DatePicker} from '@davidgovea/react-native-wheel-datepicker';
 import {ITEMS} from '../state/ItemsReducer';
-import AsyncStorage from '@react-native-community/async-storage';
 import {getProductTotal} from '../utils/helperFunctions';
+import { DatePicker } from 'react-native-wheel-pick';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {StackParamList} from '../utils/navigationTypes';
+import { RootState } from 'state/Store';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FormScreen = ({navigation}) => {
+const FormScreen = ({navigation, route}: NativeStackScreenProps<StackParamList, 'Form'>) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState(undefined);
@@ -39,16 +37,16 @@ const FormScreen = ({navigation}) => {
   const [tax, setTax] = useState('');
   const [isValid, setValid] = useState(true);
   const id = uuid.v1();
-  const _pickDate = navigation.getParam('_pickDate');
-  const _year = navigation.getParam('_year');
-  const _month = navigation.getParam('_month');
-  const _day = navigation.getParam('_day');
+  const _pickDate = route.params._pickDate;
+  const _year = route.params._year;
+  const _month = route.params._month;
+  const _day = route.params._day;
   const dispatch = useDispatch();
   const [purchaseDate, setPurchaseDate] = useState(new Date());
   const [purchaseDateString, setPurchaseDateString] = useState('');
-  let scrollRef = useRef(null);
+  let scrollRef: any = useRef<HTMLDivElement>(null);
 
-  const {theme, currency, items} = useSelector(state => ({
+  const {theme, currency, items} = useSelector((state: RootState) => ({
     theme: state.theme.color,
     currency: state.currency.short,
     items: state.items,
@@ -58,11 +56,11 @@ const FormScreen = ({navigation}) => {
     backgroundColor: theme,
   };
 
-  var warningText = isValid
+  let warningText = isValid
     ? ' '
     : 'Please fill in the name, price and category!';
 
-  const getCategory = cat => {
+  const getCategory = (cat: string | undefined) => {
     for (const [key, value] of Object.entries(categoryList)) {
       if (value.name == cat) {
         return value.icon;
@@ -72,26 +70,26 @@ const FormScreen = ({navigation}) => {
 
   const addItem = async () => {
     if (!_pickDate || purchaseDateString == '') {
-      var month = months.indexOf(_month) + 1;
-      daystring = _day.toString();
+      let month = months.indexOf(_month) + 1;
+      let daystring = _day.toString();
       if (_day < 10) {
         daystring = '0' + _day.toString();
       }
-      monthstring = month.toString();
+      let monthstring = month.toString();
       if (month < 10) {
         monthstring = '0' + month.toString();
       }
-      date = daystring + '-' + monthstring + '-' + _year.toString();
+      var date = daystring + '-' + monthstring + '-' + _year.toString();
     } else {
       date = purchaseDateString;
     }
-    data = items.items;
-    var taxAmount = 0;
+    let data: any = items.items;
+    let taxAmount = '0';
     if (addTax) {
       taxAmount = tax;
     }
-    if (data && data[date]) {
-      data[date].push({
+    if (data && data[date as keyof typeof data]) {
+      data[date as keyof typeof data].push({
         id: id,
         category: getCategory(category),
         name: name,
@@ -115,22 +113,22 @@ const FormScreen = ({navigation}) => {
     }
     dispatch({type: ITEMS, payload: data});
     await AsyncStorage.setItem('items', JSON.stringify(data));
-    navigation.goBack(null);
+    navigation.goBack();
   };
 
-  const getDateFromPicker = pickedDate => {
-    year = pickedDate.getFullYear();
-    month = pickedDate.getMonth() + 1;
-    day = pickedDate.getDate();
-    daystring = day.toString();
+  const getDateFromPicker = (pickedDate: Date) => {
+    let year = pickedDate.getFullYear();
+    let month = pickedDate.getMonth() + 1;
+    let day = pickedDate.getDate();
+    let daystring = day.toString();
     if (_day < 10) {
       daystring = '0' + _day.toString();
     }
-    monthstring = month.toString();
+    let monthstring = month.toString();
     if (month < 10) {
       monthstring = '0' + month.toString();
     }
-    datestring = daystring + '-' + monthstring + '-' + year.toString();
+    let datestring = daystring + '-' + monthstring + '-' + year.toString();
     setPurchaseDateString(datestring);
     setPurchaseDate(pickedDate);
   };
@@ -138,10 +136,10 @@ const FormScreen = ({navigation}) => {
   return (
     <SafeAreaView
       style={[styles.backgroundStyle, themeColorStyle]}
-      forceInset={{top: 'always'}}>
+      >
       <Header
         title={'Add New Item'}
-        onPress={() => navigation.goBack(null)}
+        onPress={() => navigation.goBack()}
         icon={'times'}
         rightButton={
           <SaveButton
@@ -154,7 +152,7 @@ const FormScreen = ({navigation}) => {
                 category == undefined
               ) {
                 setValid(false);
-                scrollRef.scrollResponderScrollToEnd();
+                scrollRef.scrollToEnd();
               } else {
                 setValid(true);
                 addItem();
@@ -164,7 +162,7 @@ const FormScreen = ({navigation}) => {
         }
         showBackButton={true}
       />
-      <ScrollView
+      <KeyboardAwareScrollView
         style={styles.formContainerStyle}
         automaticallyAdjustContentInsets={false}
         ref={ref => {
@@ -308,7 +306,7 @@ const FormScreen = ({navigation}) => {
           </View>
           <View>
             <Text>
-              {getProductTotal(tax, price, quantity, currency, addTax)}{' '}
+              {getProductTotal(+tax, +price, quantity, currency, addTax)}{' '}
               {currencySymbols[currency]}
             </Text>
           </View>
@@ -316,7 +314,7 @@ const FormScreen = ({navigation}) => {
         <View>
           <Text style={styles.warningStyle}>{warningText}</Text>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };
@@ -376,6 +374,8 @@ const styles = StyleSheet.create({
   },
   datePickerStyle: {
     backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 });
 

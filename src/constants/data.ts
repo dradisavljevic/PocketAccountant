@@ -1,6 +1,10 @@
 import colors from './colors';
 import icons from './icons';
 
+type StringDictionaryType = {
+  [key: string]: string;
+};
+
 export const currencyList = [
   {short: 'CAD', name: 'Canadian Dollar'},
   {short: 'GBP', name: 'British Pound'},
@@ -56,7 +60,7 @@ export const categoryList = [
   {icon: icons.miscellaneous, name: 'Other'},
 ];
 
-export const currencySymbols = {
+export const currencySymbols: StringDictionaryType = {
   CAD: 'C$',
   GBP: '£',
   RUB: '₽',

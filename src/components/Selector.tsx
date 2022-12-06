@@ -12,6 +12,11 @@ import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../constants/colors';
 import If from '../utils/conditional';
+import { RootState } from 'state/Store';
+
+type ItemType = {color: string, name: string, icon: string, short: string};
+
+type SelectorProps = {data: Array<any>, defaultText: string, displayText?: string, selectorType: string, selectorFunction: Function, cleanupFunction?: Function};
 
 const Selector = ({
   data,
@@ -20,19 +25,19 @@ const Selector = ({
   selectorType,
   selectorFunction,
   cleanupFunction,
-}) => {
+} : SelectorProps) => {
   const [showModal, setShowModal] = useState(false);
-  const {theme, currency} = useSelector(state => ({
+  const {theme, currency} = useSelector((state: RootState) => ({
     theme: state.theme.color,
     currency: state.currency.short,
   }));
-  const [icon, setIcon] = useState(undefined);
+  const [icon, setIcon] = useState('');
   const [color, setColor] = useState(theme);
   const [abbrev, setAbbrev] = useState(currency);
   const cancelationText = 'Cancel';
 
   const getIcon = () => {
-    if (icon == undefined) {
+    if (icon == '') {
       return null;
     }
     return (
@@ -76,11 +81,11 @@ const Selector = ({
           width: 200,
         };
 
-  let options = data.map((item, index) => {
+  let options = data.map((item: ItemType, index: number) => {
     let marginTop = index == 0 ? 50 : 15;
     let marginBottom = index == data.length - 1 ? 30 : 0;
 
-    const onPress = item => {
+    const onPress = (item: ItemType) => {
       setShowModal(false);
       if (selectorType == 'category') {
         selectorFunction(item.name);

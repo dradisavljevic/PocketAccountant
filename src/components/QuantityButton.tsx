@@ -1,9 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent} from 'react-native';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const QuantityButton = ({disabled, icon, onPress}) => {
+type QuantityButtonProps = {disabled: boolean, icon: string, onPress: (event: GestureResponderEvent) => void}
+
+const QuantityButton = ({disabled, icon, onPress}: QuantityButtonProps) => {
   const borderStyle = {
     borderColor: disabled ? colors.lightGray : colors.black,
   };

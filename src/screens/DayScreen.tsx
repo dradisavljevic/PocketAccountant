@@ -1,56 +1,58 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
-import {SafeAreaView} from 'react-navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Item from '../components/Item';
 import Header from '../components/Header';
-import icons from '../constants/icons';
 import colors from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {currencySymbols, months} from '../constants/data';
 import {ITEMS} from '../state/ItemsReducer';
-import AsyncStorage from '@react-native-community/async-storage';
 import {getSpendingByCurrency} from '../utils/helperFunctions';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {StackParamList} from '../utils/navigationTypes';
+import { RootState } from 'state/Store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const DayScreen = ({navigation}) => {
-  const _year = navigation.getParam('_year');
-  const _month = navigation.getParam('_month');
-  const _day = navigation.getParam('_day');
+const DayScreen = ({navigation, route}: NativeStackScreenProps<StackParamList, 'Day'>) => {
+  const _year = route.params._year;
+  const _month = route.params._month;
+  const _day = route.params._day;
   const [data, setData] = useState([]);
 
   const dispatch = useDispatch();
-  const {theme, currency, items} = useSelector(state => ({
+  const {theme, currency, items} = useSelector((state: RootState) => ({
     theme: state.theme.color,
     currency: state.currency.short,
     items: state.items,
   }));
 
   useEffect(() => {
-    var month = months.indexOf(_month) + 1;
-    daystring = _day.toString();
+    let month = months.indexOf(_month) + 1;
+    let daystring = _day.toString();
     if (_day < 10) {
       daystring = '0' + _day.toString();
     }
-    monthstring = month.toString();
+    let monthstring = month.toString();
     if (month < 10) {
       monthstring = '0' + month.toString();
     }
-    date = daystring + '-' + monthstring + '-' + _year.toString();
+    let date = daystring + '-' + monthstring + '-' + _year.toString();
     if (items.items) {
-      setData(items.items[date]);
+      setData(items.items[date as keyof typeof items.items]);
     }
   }, [items]);
 
   const getCumulativePrice = () => {
     let sums = getSpendingByCurrency(data);
 
-    sum = "Day's total: ";
+    let sum = "Day's total: ";
 
-    elements = Object.keys(sums).length;
+    let elements = Object.keys(sums).length;
 
     if (elements > 0) {
-      var i = 0;
-      for (var key in sums) {
+      let i = 0;
+      for (let key in sums) {
         i = i + 1;
         sum += sums[key] + currencySymbols[key];
         if (i == elements - 1) {
@@ -67,9 +69,9 @@ const DayScreen = ({navigation}) => {
     return sum;
   };
 
-  const deleteItemById = async id => {
-    displayData = items.items;
-    var months = [
+  const deleteItemById = async (id: string) => {
+    let displayData: any = items.items;
+    let months = [
       'January',
       'February',
       'March',
@@ -83,17 +85,17 @@ const DayScreen = ({navigation}) => {
       'November',
       'December',
     ];
-    var month = months.indexOf(_month) + 1;
-    daystring = _day.toString();
+    let month = months.indexOf(_month) + 1;
+    let daystring = _day.toString();
     if (_day < 10) {
       daystring = '0' + _day.toString();
     }
-    monthstring = month.toString();
+    let monthstring = month.toString();
     if (month < 10) {
       monthstring = '0' + month.toString();
     }
-    date = daystring + '-' + monthstring + '-' + _year.toString();
-    const filteredData = data.filter(item => item.id !== id);
+    let date = daystring + '-' + monthstring + '-' + _year.toString();
+    const filteredData = data.filter((item: {id: string}) => item.id !== id);
 
     displayData[date] = filteredData;
     if (filteredData.length == 0) {
@@ -104,29 +106,31 @@ const DayScreen = ({navigation}) => {
     setData(filteredData);
   };
 
-  // const editItem = id => {
-  //   const filteredData = data.filter(item => item.id !== id);
-  //   setData(filteredData);
-  // };
+  const editItem = (id: string) => {
+    const filteredData = data.filter((item: {id: string}) => item.id !== id);
+    setData(filteredData);
+  };
 
   const themeColorStyle = {
     backgroundColor: theme,
   };
 
+  type ItemType = {name: string, price: number, category: string, currency: string, quantity: number, tax: number, id: string}
+
   return (
     <SafeAreaView
       style={[styles.backgroundStyle, themeColorStyle]}
-      forceInset={{top: 'always'}}>
+      >
       <Header
         title={`${_month} ${_day}, ${_year}`}
-        onPress={() => navigation.goBack(null)}
+        onPress={() => navigation.goBack()}
         icon={'arrow-left'}
         showBackButton={true}
       />
       <FlatList
         data={data}
         style={styles.listContainerStyle}
-        renderItem={({item, index}) => (
+        renderItem={({item, index}: {item: ItemType, index: number}) => (
           <Item
             name={item.name}
             price={item.price}
@@ -135,6 +139,7 @@ const DayScreen = ({navigation}) => {
             quantity={item.quantity}
             tax={item.tax}
             deleteAction={() => deleteItemById(item.id)}
+            editAction={() => editItem(item.id)}
           />
         )}
         keyExtractor={(item, index) => `${index}`}
@@ -157,7 +162,7 @@ const DayScreen = ({navigation}) => {
             navigation.navigate('Form', {
               _year: _year,
               _month: _month,
-              _day: _day,
+              _day: +_day,
               _pickDate: false,
             })
           }

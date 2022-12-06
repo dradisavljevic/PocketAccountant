@@ -3,29 +3,30 @@ import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
-  Button,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation';
+import {SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import icons from '../constants/icons';
 import colors from '../constants/colors';
 import CalendarDate from '../components/CalendarDate';
 import Header from '../components/Header';
-import {currencySymbols, monthAbbrev, months} from '../constants/data';
-import AsyncStorage from '@react-native-community/async-storage';
+import {months} from '../constants/data';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {StackParamList} from '../utils/navigationTypes';
+import { RootState } from 'state/Store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {THEME} from '../state/ThemeReducer';
 import {CURRENCY} from '../state/CurrencyReducer';
 import {ITEMS} from '../state/ItemsReducer';
 
-const CalendarScreen = ({navigation}) => {
+const CalendarScreen = ({navigation}: NativeStackScreenProps<StackParamList, 'Calendar'>) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const nDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const [activeDate, setActiveDate] = useState(new Date());
   const [calendarDate, setCalendarDate] = useState(new Date());
-  const {theme, currency, items} = useSelector(state => ({
+  const {theme, currency, items} = useSelector((state: RootState) => ({
     theme: state.theme.color,
     currency: state.currency.short,
     items: state.items,
@@ -38,9 +39,9 @@ const CalendarScreen = ({navigation}) => {
 
   const getStoredInformation = async () => {
     try {
-      storedTheme = await AsyncStorage.getItem('theme');
-      storedCurrency = await AsyncStorage.getItem('currency');
-      data = await AsyncStorage.getItem('items', (error, result) => {
+      let storedTheme = await AsyncStorage.getItem('theme');
+      let storedCurrency = await AsyncStorage.getItem('currency');
+      let data = await AsyncStorage.getItem('items', (error, result) => {
         if (result != null) {
           dispatch({type: ITEMS, payload: JSON.parse(result)});
         }
@@ -51,14 +52,14 @@ const CalendarScreen = ({navigation}) => {
       if (storedCurrency) {
         dispatch({type: CURRENCY, payload: storedCurrency});
       }
-    } catch (error) {
+    } catch (error: any) {
       // Error retrieving data
       console.log(error.message);
     }
   };
 
   const generateMatrix = () => {
-    var matrix = [];
+    let matrix: (string[] | number[])[] = [];
     matrix[0] = weekDays;
 
     let year = calendarDate.getFullYear();
@@ -100,7 +101,7 @@ const CalendarScreen = ({navigation}) => {
     return matrix;
   };
 
-  const changeMonth = n => {
+  const changeMonth = (n: number) => {
     setCalendarDate(
       new Date(
         calendarDate.getFullYear(),
@@ -114,21 +115,23 @@ const CalendarScreen = ({navigation}) => {
     setCalendarDate(activeDate);
   };
 
-  const isTodaysDate = day => {
+  const isTodaysDate = (day: Number) => {
     if (
       day == activeDate.getDate() &&
       calendarDate.getFullYear() == activeDate.getFullYear() &&
       calendarDate.getMonth() == activeDate.getMonth()
-    )
+    ) {
       return true;
-    else return false;
+    } else {
+      return false;
+    }
   };
 
   var matrix = generateMatrix();
 
-  var rows = [];
+  let rows = [];
   rows = matrix.map((row, rowIndex) => {
-    var rowItems = row.map((item, colIndex) => {
+    let rowItems = row.map((item, colIndex) => {
       return (
         <CalendarDate
           rowIndex={rowIndex}
@@ -158,7 +161,7 @@ const CalendarScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView forceInset={{top: 'always'}} style={themeColorStyle}>
+    <SafeAreaView style={themeColorStyle}>
       <Header title={'Pocket Accountant'} />
       <ScrollView
         style={styles.scrollContainerStyle}
@@ -198,7 +201,7 @@ const CalendarScreen = ({navigation}) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('FormDate', {
+            navigation.navigate('Form', {
               _year: activeDate.getFullYear(),
               _month: months[activeDate.getMonth()],
               _day: activeDate.getDate(),
